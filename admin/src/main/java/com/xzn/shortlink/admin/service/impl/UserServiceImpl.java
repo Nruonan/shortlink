@@ -1,5 +1,6 @@
 package com.xzn.shortlink.admin.service.impl;
 
+import static com.xzn.shortlink.admin.common.constant.RedisCacheConstant.LOCK_USER_REGISTER_KEY;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_NAME_EXIST;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
 
@@ -16,6 +17,8 @@ import com.xzn.shortlink.admin.dto.resp.UserRespDTO;
 import com.xzn.shortlink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements UserService {
 
     private final RBloomFilter<String> rBloomFilter;
+
+    private final RedissonClient redissonClient;
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
@@ -56,11 +61,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
         if(!hasUsername(requestParam.getUsername())){
             throw new ClientException(USER_NAME_EXIST);
         }
-        UserDo userDo = BeanUtil.toBean(requestParam, UserDo.class);
-        int insert = baseMapper.insert(userDo);
-        if(insert < 1){
-            throw new ClientException(USER_SAVE_ERROR);
+        RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUsername());
+        try{
+            if(lock.tryLock()){
+                int insert = baseMapper.insert(BeanUtil.toBean(requestParam, UserDo.class));
+                if(insert < 1){
+                    throw new ClientException(USER_SAVE_ERROR);
+                }
+                rBloomFilter.add(requestParam.getUsername());
+                return;
+            }else{
+                throw new ClientException(USER_NAME_EXIST);
+            }
+        }finally {
+            lock.unlock();
         }
-        rBloomFilter.add(userDo.getUsername());
+
+
     }
 }
