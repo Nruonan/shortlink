@@ -7,8 +7,10 @@ import com.xzn.shortlink.admin.common.convention.errorcode.IErrorCode;
  * @description
  */
 public enum UserErrorCodeEnum implements IErrorCode {
-    USER_NULL("B0002000","用户记录不存在"),
-    USER_EXIST("B000201","用户记录已存在");
+    USER_NULL("B000200","用户记录不存在"),
+    USER_NAME_EXIST("B000201","用户姓名已存在"),
+    USER_EXIST("B000202","用户记录已存在"),
+    USER_SAVE_ERROR("B000203","用户记录新增失败");
     private final String code;
 
     private final String message;
