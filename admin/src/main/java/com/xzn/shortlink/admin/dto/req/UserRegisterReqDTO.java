@@ -1,4 +1,4 @@
-package com.xzn.shortlink.admin.dto.resp;
+package com.xzn.shortlink.admin.dto.req;
 
 import lombok.Data;
 
@@ -18,7 +18,7 @@ public class UserRegisterReqDTO {
      */
     private String username;
 
-
+    private String password;
     /**
      * 真实姓名
      */
