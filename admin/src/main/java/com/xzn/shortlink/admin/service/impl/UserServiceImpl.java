@@ -20,6 +20,7 @@ import com.xzn.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.xzn.shortlink.admin.dto.resp.UserRespDTO;
 import com.xzn.shortlink.admin.service.UserService;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
@@ -109,6 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
         }
         String uuid = UUID.randomUUID().toString();
         stringRedisTemplate.opsForHash().put("login_"+requestParam.getUsername(),uuid, JSON.toJSONString(requestParam));
+        stringRedisTemplate.expire("login_"+requestParam.getUsername(), 30, TimeUnit.DAYS);
         return new UserLoginRespDTO(uuid);
     }
 

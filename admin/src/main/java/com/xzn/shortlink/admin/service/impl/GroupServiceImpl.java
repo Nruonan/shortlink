@@ -2,12 +2,14 @@ package com.xzn.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzn.shortlink.admin.biz.user.UserContext;
 import com.xzn.shortlink.admin.dao.entity.GroupDo;
 import com.xzn.shortlink.admin.dao.mapper.GroupMapper;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
+import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.xzn.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.xzn.shortlink.admin.service.GroupService;
@@ -69,11 +71,26 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
 
     @Override
     public void deleteGroup(String gid) {
-        LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
+        LambdaUpdateWrapper<GroupDo> updateWrapper = Wrappers.lambdaUpdate(GroupDo.class)
             .eq(GroupDo::getGid,gid)
             .eq(GroupDo::getUsername, UserContext.getUsername());
-        GroupDo groupDo = baseMapper.selectOne(queryWrapper);
+        GroupDo groupDo = baseMapper.selectOne(updateWrapper);
         groupDo.setDelFlag(1);
-        baseMapper.update(groupDo,queryWrapper);
+        baseMapper.update(groupDo,updateWrapper);
+    }
+
+    @Override
+    public void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam) {
+        requestParam.forEach(each->{
+            GroupDo groupDo = GroupDo.builder()
+                .gid(each.getGid())
+                .sortOrder(each.getSortOrder())
+                .build();
+            LambdaUpdateWrapper<GroupDo> updateWrapper = Wrappers.lambdaUpdate(GroupDo.class)
+                .eq(GroupDo::getGid, each.getGid())
+                .eq(GroupDo::getUsername, UserContext.getUsername())
+                .eq(GroupDo::getDelFlag, 0);
+            baseMapper.update(groupDo,updateWrapper);
+        });
     }
 }
