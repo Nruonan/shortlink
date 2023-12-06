@@ -5,6 +5,7 @@ import com.xzn.shortlink.admin.common.convention.result.Results;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.xzn.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
+import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import com.xzn.shortlink.admin.service.GroupService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,14 @@ public class GroupController {
     @DeleteMapping("/api/short-link/admin/v1/group")
     public Result<Void> delete(@RequestParam String gid){
         groupService.deleteGroup(gid);
+        return Results.success();
+    }
+    /**
+     *  短链接排序
+     */
+    @PostMapping("/api/short-link/admin/v1/group/sort")
+    public Result<Void> groupSort(@RequestBody List<ShortLinkGroupSortReqDTO> requestParam){
+        groupService.sortGroup(requestParam);
         return Results.success();
     }
 }
