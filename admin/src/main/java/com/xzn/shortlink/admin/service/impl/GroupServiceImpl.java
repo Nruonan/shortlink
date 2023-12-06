@@ -8,6 +8,7 @@ import com.xzn.shortlink.admin.biz.user.UserContext;
 import com.xzn.shortlink.admin.dao.entity.GroupDo;
 import com.xzn.shortlink.admin.dao.mapper.GroupMapper;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
+import com.xzn.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.xzn.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.xzn.shortlink.admin.service.GroupService;
 import com.xzn.shortlink.admin.toolkit.RandomGenerator;
@@ -53,5 +54,26 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
             .eq(GroupDo::getUsername, UserContext.getUsername());
         GroupDo groupDo = baseMapper.selectOne(queryWrapper);
         return groupDo == null;
+    }
+
+    @Override
+    public void updateGroup(ShortLinkGroupUpdateReqDTO requestParam) {
+        LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
+            .eq(GroupDo::getUsername, UserContext.getUsername())
+            .eq(GroupDo::getGid, requestParam.getGid())
+            .eq(GroupDo::getDelFlag, 0);
+        GroupDo groupDo = new GroupDo();
+        groupDo.setName(requestParam.getName());
+        baseMapper.update(groupDo,queryWrapper);
+    }
+
+    @Override
+    public void deleteGroup(String gid) {
+        LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
+            .eq(GroupDo::getGid,gid)
+            .eq(GroupDo::getUsername, UserContext.getUsername());
+        GroupDo groupDo = baseMapper.selectOne(queryWrapper);
+        groupDo.setDelFlag(1);
+        baseMapper.update(groupDo,queryWrapper);
     }
 }
