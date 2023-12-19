@@ -43,7 +43,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
     public List<ShortLinkGroupRespDTO> listGroup() {
         LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
             .eq(GroupDo::getDelFlag, 0)
-            // TODO 设置用户名
             .eq(GroupDo::getUsername, UserContext.getUsername())
             .orderByDesc(GroupDo::getSortOrder, GroupDo::getUpdateTime);
         List<GroupDo> groupDos = baseMapper.selectList(queryWrapper);
