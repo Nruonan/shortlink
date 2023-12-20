@@ -86,7 +86,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         //布隆过滤器添加该短链接
         shortUriCachePenetrationBloomFilter.add(shortLinkSuffix);
         return ShortLinkCreateRespDTO.builder()
-            .fullShortUrl(requestParam.getDomainProtocol() + shortLinkDO.getFullShortUrl())
+            .fullShortUrl("http://" + shortLinkDO.getFullShortUrl())
             .originUrl(requestParam.getOriginUrl())
             .gid(requestParam.getGid())
             .build();
@@ -149,7 +149,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         IPage<ShortLinkDO> resultPage = baseMapper.selectPage(requestParam, queryWrapper);
         // 封装分页
         return resultPage.convert(
-            each -> BeanUtil.toBean(each, ShortLinkPageRespDTO.class));
+            each -> {
+                ShortLinkPageRespDTO result = BeanUtil.toBean(each, ShortLinkPageRespDTO.class);
+                result.setDomain("http://" + result.getDomain());
+                return result;
+            });
     }
 
     @Override
