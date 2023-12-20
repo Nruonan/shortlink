@@ -1,6 +1,7 @@
 package com.xzn.shortlink.admin.service.impl;
 
 import static com.xzn.shortlink.admin.common.constant.RedisCacheConstant.LOCK_USER_REGISTER_KEY;
+import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_EXIST;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_NAME_EXIST;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
 
@@ -26,6 +27,7 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -72,9 +74,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUsername());
         try{
             if(lock.tryLock()){
-                int insert = baseMapper.insert(BeanUtil.toBean(requestParam, UserDo.class));
-                if(insert < 1){
-                    throw new ClientException(USER_SAVE_ERROR);
+                try{
+                    int insert = baseMapper.insert(BeanUtil.toBean(requestParam, UserDo.class));
+                    if(insert < 1){
+                        throw new ClientException(USER_SAVE_ERROR);
+                    }
+                }catch (DuplicateKeyException ex){
+                    throw new ClientException(USER_EXIST);
                 }
                 rBloomFilter.add(requestParam.getUsername());
                 return;
