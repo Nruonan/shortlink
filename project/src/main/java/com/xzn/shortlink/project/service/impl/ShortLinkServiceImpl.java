@@ -48,7 +48,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         try {
             baseMapper.insert(shortLinkDO);
         }catch (DuplicateKeyException ex){
-            // 1.查数据库shortUri
+            // 1.查数据库shortUrl
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                 .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
             ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
@@ -75,7 +75,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             .eq(ShortLinkDO::getEnableStatus, 0)
             .eq(ShortLinkDO::getDelFlag, 0)
             .orderByDesc(ShortLinkDO::getCreateTime);
+        // 生成分页
         IPage<ShortLinkDO> resultPage = baseMapper.selectPage(requestParam, queryWrapper);
+        // 封装分页
         return resultPage.convert(
             each -> BeanUtil.toBean(each, ShortLinkPageRespDTO.class));
     }

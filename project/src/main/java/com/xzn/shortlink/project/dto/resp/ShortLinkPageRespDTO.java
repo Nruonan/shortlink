@@ -1,5 +1,6 @@
 package com.xzn.shortlink.project.dto.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import lombok.Data;
 
@@ -52,11 +53,16 @@ public class ShortLinkPageRespDTO {
     /**
      * 有效期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date validDate;
 
     /**
      * 描述
      */
     private String describe;
-
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 }
