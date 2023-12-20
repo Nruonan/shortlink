@@ -14,11 +14,13 @@ import com.xzn.shortlink.admin.common.convention.exception.ClientException;
 import com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.xzn.shortlink.admin.dao.entity.UserDo;
 import com.xzn.shortlink.admin.dao.mapper.UserMapper;
+import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserUpdateReqDTO;
 import com.xzn.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.xzn.shortlink.admin.dto.resp.UserRespDTO;
+import com.xzn.shortlink.admin.service.GroupService;
 import com.xzn.shortlink.admin.service.UserService;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 
     private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
+    private final GroupService groupService;
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
@@ -83,10 +86,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
                     throw new ClientException(USER_EXIST);
                 }
                 rBloomFilter.add(requestParam.getUsername());
+                groupService.saveGroup(new ShortLinkGroupSaveReqDTO("默认分组"));
                 return;
-            }else{
-                throw new ClientException(USER_NAME_EXIST);
             }
+
+            throw new ClientException(USER_NAME_EXIST);
+
         }finally {
             lock.unlock();
         }
