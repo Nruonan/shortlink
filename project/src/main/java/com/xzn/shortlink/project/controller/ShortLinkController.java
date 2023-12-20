@@ -30,9 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShortLinkController {
 
     private final ShortLinkService shortLinkService;
+    /**
+     * 跳转短连接 通过输入short-uri
+     */
     @GetMapping("/{short-uri}")
-    public void restoreUrl(@PathVariable("short-uri") String shortUri, ServletRequest request, ServletResponse response)
-         {
+    public void restoreUrl(@PathVariable("short-uri") String shortUri, ServletRequest request, ServletResponse response) {
         shortLinkService.restoreUrl(shortUri,request,response);
     }
     /**

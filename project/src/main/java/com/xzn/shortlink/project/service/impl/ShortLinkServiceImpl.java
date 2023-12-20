@@ -166,20 +166,25 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         List<Map<String,Object>> objects1 = baseMapper.selectMaps(queryWrapper);
         return BeanUtil.copyToList(objects1,ShortLinkGroupQueryRespDTO.class);
     }
-
+    /**
+     * 跳转短链接
+     */
     @SneakyThrows
     @Override
     public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response)  {
+        // 获取域名
         String serverName = request.getServerName();
         // 获取完整短链接
         String fullShortUrl = serverName + "/" + shortUri;
         LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
             .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
+        // 得到跳转对象
         ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
         if(shortLinkGotoDO == null){
             // TODO 需要封控
             return;
         }
+        // 查询
         LambdaQueryWrapper<ShortLinkDO> linkQueryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
             .eq(ShortLinkDO::getFullShortUrl, fullShortUrl)
             .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())

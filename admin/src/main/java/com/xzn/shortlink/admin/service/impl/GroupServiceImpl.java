@@ -54,14 +54,18 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
 
     @Override
     public List<ShortLinkGroupRespDTO> listGroup() {
+        // 先查组
         LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
             .eq(GroupDo::getDelFlag, 0)
             .eq(GroupDo::getUsername, UserContext.getUsername())
             .orderByDesc(GroupDo::getSortOrder, GroupDo::getUpdateTime);
         List<GroupDo> groupDos = baseMapper.selectList(queryWrapper);
+        // 通过gid远程调用获取短链接个数
         Result<List<ShortLinkGroupQueryRespDTO>> listResult = shortRemoteLinkService.listGroupShortLinkCount(
             groupDos.stream().map(GroupDo::getGid).toList());
+        // 封装到响应对象
         List<ShortLinkGroupRespDTO> shortLinkGroupRespDTOList = BeanUtil.copyToList(groupDos, ShortLinkGroupRespDTO.class);
+        // 把数量设置到shortLinkGroupRespDTOList
         shortLinkGroupRespDTOList.forEach(each ->{
             String gid = each.getGid();
             Optional<ShortLinkGroupQueryRespDTO> first = listResult.getData().stream()
