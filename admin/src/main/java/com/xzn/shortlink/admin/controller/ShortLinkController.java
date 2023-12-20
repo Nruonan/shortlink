@@ -5,6 +5,7 @@ import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.remote.dto.ShortLinkRemoteService;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
+import com.xzn.shortlink.admin.remote.dto.req.ShortLinkUpdateReqDTO;
 import com.xzn.shortlink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
 import com.xzn.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,13 @@ public class ShortLinkController {
     @PostMapping("/api/short-link/admin/v1/create")
     public Result<ShortLinkCreateRespDTO> createShortLink(@RequestBody ShortLinkCreateReqDTO requestParam){
         return shortRemoteLinkService.createShortLink(requestParam);
+    }
+    /**
+     *  修改短链接
+     */
+    @PostMapping("/api/short-link/admin/v1/update")
+    public Result<Void> createShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam){
+        return shortRemoteLinkService.updateShortLink(requestParam);
     }
     /**
      * 分页查询短链接
