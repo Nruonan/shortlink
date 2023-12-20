@@ -11,7 +11,6 @@ import com.xzn.shortlink.project.dto.resp.ShortLinkGroupQueryRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,5 +28,5 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      void updateShortLink(ShortLinkUpdateReqDTO requestParam);
 
 
-    void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) throws IOException;
+    void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) ;
 }

@@ -12,7 +12,6 @@ import com.xzn.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.xzn.shortlink.project.service.ShortLinkService;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +32,7 @@ public class ShortLinkController {
     private final ShortLinkService shortLinkService;
     @GetMapping("/{short-uri}")
     public void restoreUrl(@PathVariable("short-uri") String shortUri, ServletRequest request, ServletResponse response)
-        throws IOException {
+         {
         shortLinkService.restoreUrl(shortUri,request,response);
     }
     /**

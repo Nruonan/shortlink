@@ -25,11 +25,11 @@ import com.xzn.shortlink.project.util.HashUtil;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBloomFilter;
 import org.springframework.dao.DuplicateKeyException;
@@ -86,7 +86,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         //布隆过滤器添加该短链接
         shortUriCachePenetrationBloomFilter.add(shortLinkSuffix);
         return ShortLinkCreateRespDTO.builder()
-            .fullShortUrl(shortLinkDO.getFullShortUrl())
+            .fullShortUrl(requestParam.getDomainProtocol() + shortLinkDO.getFullShortUrl())
             .originUrl(requestParam.getOriginUrl())
             .gid(requestParam.getGid())
             .build();
@@ -163,8 +163,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return BeanUtil.copyToList(objects1,ShortLinkGroupQueryRespDTO.class);
     }
 
+    @SneakyThrows
     @Override
-    public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) throws IOException {
+    public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response)  {
         String serverName = request.getServerName();
         // 获取完整短链接
         String fullShortUrl = serverName + "/" + shortUri;
