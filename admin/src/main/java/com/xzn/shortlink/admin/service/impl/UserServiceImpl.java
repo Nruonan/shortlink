@@ -14,7 +14,6 @@ import com.xzn.shortlink.admin.common.convention.exception.ClientException;
 import com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.xzn.shortlink.admin.dao.entity.UserDo;
 import com.xzn.shortlink.admin.dao.mapper.UserMapper;
-import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserUpdateReqDTO;
@@ -86,7 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
                     throw new ClientException(USER_EXIST);
                 }
                 rBloomFilter.add(requestParam.getUsername());
-                groupService.saveGroup(new ShortLinkGroupSaveReqDTO("默认分组"));
+                groupService.saveGroup(requestParam.getUsername(),"默认分组");
                 return;
             }
 

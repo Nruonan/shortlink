@@ -34,16 +34,21 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
     ShortLinkRemoteService shortRemoteLinkService = new ShortLinkRemoteService(){};
     @Override
     public void saveGroup(ShortLinkGroupSaveReqDTO requestParam) {
+        saveGroup(UserContext.getUsername(),requestParam.getName());
+    }
+
+    @Override
+    public void saveGroup(String username, String groupname) {
         String gid;
         do{
             gid = RandomGenerator.generateRandom();
-        }while(!hasGid(gid));
+        }while(!hasGid(username,gid));
         GroupDo groupDo = GroupDo.builder()
-                    .gid(gid)
-                    .sortOrder(0)
-                    .username(UserContext.getUsername())
-                    .name(requestParam.getName())
-                    .build();
+            .gid(gid)
+            .sortOrder(0)
+            .username(username)
+            .name(groupname)
+            .build();
         baseMapper.insert(groupDo);
     }
 
@@ -67,10 +72,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
         return shortLinkGroupRespDTOList;
     }
 
-    private boolean hasGid(String gid){
+    private boolean hasGid(String username , String gid){
         LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
             .eq(GroupDo::getGid,gid)
-            .eq(GroupDo::getUsername, UserContext.getUsername());
+            .eq(GroupDo::getUsername, Optional.ofNullable(username).orElse(UserContext.getUsername()));
         GroupDo groupDo = baseMapper.selectOne(queryWrapper);
         return groupDo == null;
     }
