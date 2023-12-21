@@ -1,5 +1,6 @@
 package com.xzn.shortlink.project.service.impl;
 
+import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_IS_NULL_SHORT_LINK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_SHORT_LINK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GOTO_SHORT_LINK_KEY;
 
@@ -26,12 +27,14 @@ import com.xzn.shortlink.project.dto.resp.ShortLinkGroupQueryRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.xzn.shortlink.project.service.ShortLinkService;
 import com.xzn.shortlink.project.util.HashUtil;
+import com.xzn.shortlink.project.util.LinkUtil;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +95,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
         }
         //布隆过滤器添加该短链接
-        shortUriCachePenetrationBloomFilter.add(shortLinkSuffix);
+        shortUriCachePenetrationBloomFilter.add(fullShortUrl);
+        stringRedisTemplate.opsForValue()
+            .set(fullShortUrl,requestParam.getOriginUrl(), LinkUtil.getLinkCacheValidDate(requestParam.getValidDate()),TimeUnit.MILLISECONDS);
         return ShortLinkCreateRespDTO.builder()
             .fullShortUrl("http://" + shortLinkDO.getFullShortUrl())
             .originUrl(requestParam.getOriginUrl())
@@ -184,11 +189,24 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String serverName = request.getServerName();
         // 获取完整短链接
         String fullShortUrl = serverName + "/" + shortUri;
-        // 从redis获取goto表
+        // 从redis获取短链接
         String originalLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_SHORT_LINK_KEY, fullShortUrl));
+        if(StrUtil.isNotBlank(originalLink)){
+            ((HttpServletResponse) response).sendRedirect(originalLink);
+            return;
+        }
+        // 判断布隆过滤器是否有完整短链接
+        boolean contains = shortUriCachePenetrationBloomFilter.contains(fullShortUrl);
+        if(!contains){
+            return;
+        }
+        String gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl));
+        if(StrUtil.isNotBlank(gotoIsNullShortLink)){
+            return;
+        }
         // 判断gotolink是否存在，
         if(StrUtil.isBlank(originalLink)){
-            // 不存在 则加锁
+            // 不存在 则加锁 b
             RLock lock = redissonClient.getLock(String.format(LOCK_GOTO_SHORT_LINK_KEY, fullShortUrl));
             lock.lock();
             try {
@@ -203,6 +221,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
                 if (shortLinkGotoDO == null) {
                     // TODO 需要封控
+                    stringRedisTemplate.opsForValue().set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),"-",30,
+                        TimeUnit.MINUTES);
                     return;
                 }
                 // 查询
