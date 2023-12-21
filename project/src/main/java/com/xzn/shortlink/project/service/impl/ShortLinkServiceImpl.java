@@ -31,6 +31,7 @@ import com.xzn.shortlink.project.util.LinkUtil;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -97,7 +98,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         //布隆过滤器添加该短链接
         shortUriCachePenetrationBloomFilter.add(fullShortUrl);
         stringRedisTemplate.opsForValue()
-            .set(fullShortUrl,requestParam.getOriginUrl(), LinkUtil.getLinkCacheValidDate(requestParam.getValidDate()),TimeUnit.MILLISECONDS);
+            .set(String.format(GOTO_SHORT_LINK_KEY,fullShortUrl),
+                requestParam.getOriginUrl(),
+                LinkUtil.getLinkCacheValidDate(requestParam.getValidDate()),TimeUnit.MILLISECONDS);
         return ShortLinkCreateRespDTO.builder()
             .fullShortUrl("http://" + shortLinkDO.getFullShortUrl())
             .originUrl(requestParam.getOriginUrl())
@@ -234,8 +237,16 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 获取短链接实体
                 ShortLinkDO shortLinkDO = baseMapper.selectOne(linkQueryWrapper);
                 if (shortLinkDO != null) {
+                    if (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date())){
+                        stringRedisTemplate.opsForValue().set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),"-",30,
+                            TimeUnit.MINUTES);
+                        return;
+                    }
                     ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
-                    stringRedisTemplate.opsForValue().set((String.format(GOTO_SHORT_LINK_KEY, fullShortUrl)),shortLinkDO.getOriginUrl());
+                    stringRedisTemplate.opsForValue().set(
+                        (String.format(GOTO_SHORT_LINK_KEY, fullShortUrl)),
+                        shortLinkDO.getOriginUrl(),
+                        LinkUtil.getLinkCacheValidDate(shortLinkDO.getValidDate()),TimeUnit.MILLISECONDS);
                 }
             }finally{
                 lock.unlock();
