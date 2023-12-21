@@ -97,6 +97,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
         //布隆过滤器添加该短链接
         shortUriCachePenetrationBloomFilter.add(fullShortUrl);
+        // 设置redis过期有效期
         stringRedisTemplate.opsForValue()
             .set(String.format(GOTO_SHORT_LINK_KEY,fullShortUrl),
                 requestParam.getOriginUrl(),
@@ -201,10 +202,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 判断布隆过滤器是否有完整短链接
         boolean contains = shortUriCachePenetrationBloomFilter.contains(fullShortUrl);
         if(!contains){
+            // 如果布隆过滤器没有则结束
+            ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return;
         }
+        // 判断redis是否存在该短链接为空的数据
         String gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl));
         if(StrUtil.isNotBlank(gotoIsNullShortLink)){
+            // 存在则结束
+            ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return;
         }
         // 判断gotolink是否存在，
@@ -226,6 +232,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     // TODO 需要封控
                     stringRedisTemplate.opsForValue().set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),"-",30,
                         TimeUnit.MINUTES);
+                    ((HttpServletResponse) response).sendRedirect("/page/notfound");
                     return;
                 }
                 // 查询
@@ -237,12 +244,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 获取短链接实体
                 ShortLinkDO shortLinkDO = baseMapper.selectOne(linkQueryWrapper);
                 if (shortLinkDO != null) {
+                    // 如果短链接日期不存在或者过期了
                     if (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date())){
+                        // 向redis设置该短链接不可访问
                         stringRedisTemplate.opsForValue().set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),"-",30,
                             TimeUnit.MINUTES);
+                        ((HttpServletResponse) response).sendRedirect("/page/notfound");
                         return;
                     }
+                    // 重定向短链接
                     ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
+                    // 向redis设置短链接，并添加过期时间
                     stringRedisTemplate.opsForValue().set(
                         (String.format(GOTO_SHORT_LINK_KEY, fullShortUrl)),
                         shortLinkDO.getOriginUrl(),
