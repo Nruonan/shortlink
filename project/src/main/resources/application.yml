@@ -12,7 +12,13 @@ spring:
       port: 6379
       password: 123456
       host: 8.134.93.74
-
+#  实现mybatis-plus删除是将del_flag置为1
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
   mvc:
     view:
       prefix: /templates/
