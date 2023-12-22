@@ -252,8 +252,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLinkDO::getDelFlag, 0);
                 // 获取短链接实体
                 ShortLinkDO shortLinkDO = baseMapper.selectOne(linkQueryWrapper);
-                if (shortLinkDO == null || shortLinkDO.getValidDate().before(new Date())) {
-                    // 如果短链接日期不存在或者过期了
+                // 如果短链接日期不存在或者过期了
+                if (shortLinkDO == null || (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date()))) {
                     // 向redis设置该短链接不可访问
                     stringRedisTemplate.opsForValue()
                         .set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl), "-", 30,
@@ -261,9 +261,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     ((HttpServletResponse) response).sendRedirect("/page/notfound");
                     return;
                 }
-                    // 重定向短链接
+                // 重定向短链接
                 ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
-                    // 向redis设置短链接，并添加过期时间
+                // 向redis设置短链接，并添加过期时间
                 stringRedisTemplate.opsForValue().set(
                     (String.format(GOTO_SHORT_LINK_KEY, fullShortUrl)),
                     shortLinkDO.getOriginUrl(),

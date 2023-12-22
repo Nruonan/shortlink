@@ -8,6 +8,7 @@ import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
+import com.xzn.shortlink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkUpdateReqDTO;
 import com.xzn.shortlink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
 import com.xzn.shortlink.admin.remote.dto.resp.ShortLinkGroupQueryRespDTO;
@@ -74,5 +75,15 @@ public interface ShortLinkRemoteService {
     default void saveRecycleBin(RecycleBinSaveReqDTO requestParam){
         String resultStr = HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/save",JSON.toJSONString(requestParam));
 
+    }
+
+    default Result<IPage<ShortLinkPageRespDTO>> pageRecycleBinShortLink(ShortLinkRecycleBinPageReqDTO requestParam){
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("gidList",requestParam.getGidList());
+        requestMap.put("current",requestParam.getCurrent());
+        requestMap.put("size",requestParam.getSize());
+        String resultPageStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/page", requestMap);
+        return JSON.parseObject(resultPageStr, new TypeReference<>() {
+        });
     }
 }
