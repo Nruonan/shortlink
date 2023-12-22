@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xzn.shortlink.admin.common.convention.result.Result;
+import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
@@ -76,7 +77,9 @@ public interface ShortLinkRemoteService {
         String resultStr = HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/save",JSON.toJSONString(requestParam));
 
     }
-
+    /**
+     * 分页查询回收站短链接
+     */
     default Result<IPage<ShortLinkPageRespDTO>> pageRecycleBinShortLink(ShortLinkRecycleBinPageReqDTO requestParam){
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("gidList",requestParam.getGidList());
@@ -85,5 +88,11 @@ public interface ShortLinkRemoteService {
         String resultPageStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/page", requestMap);
         return JSON.parseObject(resultPageStr, new TypeReference<>() {
         });
+    }
+    /**
+     * 恢复短链接
+     */
+    default void recoverRecycleBin(RecycleBinRecoverReqDTO requestParam){
+        String resultStr = HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/recover",JSON.toJSONString(requestParam));
     }
 }
