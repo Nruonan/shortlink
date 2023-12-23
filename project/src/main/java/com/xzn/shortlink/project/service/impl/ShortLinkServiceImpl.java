@@ -82,12 +82,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 根据原始连接生成后缀
         String shortLinkSuffix = generateSuffix(requestParam);
         String fullShortUrl =  requestParam.getDomain() + "/" +shortLinkSuffix;
+        // 获取图标
+        String favicon = getFavicon(requestParam.getOriginUrl());
+        if(StrUtil.isEmpty(favicon)){
+            favicon = "";
+        }
         // 实例化ShortLinkDO
         ShortLinkDO shortLinkDO = BeanUtil.toBean(requestParam, ShortLinkDO.class);
         shortLinkDO.setFullShortUrl(requestParam.getDomain() + "/" +shortLinkSuffix);
         shortLinkDO.setEnableStatus(0);
         shortLinkDO.setShortUri(shortLinkSuffix);
-        shortLinkDO.setFavicon(getFavicon(requestParam.getOriginUrl()));
+        shortLinkDO.setFavicon(favicon);
         ShortLinkGotoDO shortLinkGoto = ShortLinkGotoDO.builder()
             .fullShortUrl(shortLinkDO.getFullShortUrl())
             .gid(requestParam.getGid())
