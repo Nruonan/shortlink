@@ -3,6 +3,7 @@ package com.xzn.shortlink.project.service.impl;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_IS_NULL_SHORT_LINK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_SHORT_LINK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GOTO_SHORT_LINK_KEY;
+import static com.xzn.shortlink.project.common.constant.ShortLinkConstant.AMAP_REMOTE_URL;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
@@ -10,6 +11,9 @@ import cn.hutool.core.date.Week;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -20,9 +24,11 @@ import com.xzn.shortlink.project.common.convention.exception.ClientException;
 import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
+import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.xzn.shortlink.project.dto.req.ShortLinkCreateReqDTO;
@@ -43,6 +49,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,6 +64,7 @@ import org.jsoup.nodes.Element;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -77,6 +85,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final StringRedisTemplate stringRedisTemplate;
     private final RedissonClient redissonClient;
     private final LinkAccessStatsMapper linkAccessStatsMapper;
+    private final LinkLocaleStatsMapper linkLocaleStatsMapper;
+    @Value("${short-link.stats.locale.amap-key}")
+    private String statsLocaleAmapKey;
 
     @Override
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
@@ -280,10 +291,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     ((HttpServletResponse) response).sendRedirect("/page/notfound");
                     return;
                 }
+                // 监控短链接
                 shortLinkStats(fullShortUrl,shortLinkDO.getGid(),request,response);
                 // 重定向短链接
                 ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
-
                 // 向redis设置短链接，并添加过期时间
                 stringRedisTemplate.opsForValue().set(
                     (String.format(GOTO_SHORT_LINK_KEY, fullShortUrl)),
@@ -364,6 +375,37 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .date(new Date())
                 .build();
             linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
+
+            Map<String,Object> localeMap = new HashMap<>();
+            // 设置高德key和ip
+            localeMap.put("key",statsLocaleAmapKey);
+            localeMap.put("ip",remoteAddr);
+            // 访问高德ip定位的api
+            String localeResultStr = HttpUtil.get(AMAP_REMOTE_URL, localeMap);
+            // 获取IPJson格式对象
+            JSONObject localeResultObj = JSON.parseObject(localeResultStr);
+            // 得到信息状态码
+            String infocode = localeResultObj.getString("infocode");
+            // 判断获取是否成功
+            if(StrUtil.isNotBlank(infocode) && Objects.equals(infocode,"10000")){
+                // 如果成功，获取省份的
+                String province = localeResultObj.getString("province");
+                // 判断是否为大括号
+                boolean unknownFlag = StrUtil.equals(province,"[]");
+                LinkLocaleStatsDO linkLocaleStatsDO = LinkLocaleStatsDO.builder()
+                    .province(unknownFlag ? province : "未知")
+                    .city(unknownFlag ? localeResultObj.getString("city") : "未知")
+                    .adcode(unknownFlag ? localeResultObj.getString("adcode") : "未知")
+                    .country("中国")
+                    .cnt(1)
+                    .fullShortUrl(fullShortUrl)
+                    .gid(gid)
+                    .date(new Date())
+                    .build();
+                // 插入数据
+                linkLocaleStatsMapper.shortLinkLocalStats(linkLocaleStatsDO);
+            }
+
         }catch (Throwable ex){
             log.error("短链接访问统计异常",ex);
         }
