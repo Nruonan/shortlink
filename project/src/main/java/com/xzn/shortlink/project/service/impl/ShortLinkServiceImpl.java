@@ -24,11 +24,13 @@ import com.xzn.shortlink.project.common.convention.exception.ClientException;
 import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
+import com.xzn.shortlink.project.dao.mapper.LinkBrowserStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
@@ -89,6 +91,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkAccessStatsMapper linkAccessStatsMapper;
     private final LinkLocaleStatsMapper linkLocaleStatsMapper;
     private final LinkOsStatsMapper linkOsStatsMapper;
+    private final LinkBrowserStatsMapper linkBrowserStatsMapper;
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
@@ -408,6 +411,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 插入国家地区数据
                 linkLocaleStatsMapper.shortLinkLocaleStats(linkLocaleStatsDO);
 
+                // 插入操作系统数据
                 LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
                     .os(LinkUtil.getOs((HttpServletRequest)request))
                     .cnt(1)
@@ -415,8 +419,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .gid(gid)
                     .date(new Date())
                     .build();
-                // 插入操作系统数据
                 linkOsStatsMapper.shortLinkOsStats(linkOsStatsDO);
+
+                // 插入浏览器数据
+                LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
+                    .browser(LinkUtil.getBrowser((HttpServletRequest) request))
+                    .cnt(1)
+                    .fullShortUrl(fullShortUrl)
+                    .gid(gid)
+                    .date(new Date())
+                    .build();
+                linkBrowserStatsMapper.shortLinkBrowserStats(linkBrowserStatsDO);
             }
 
         }catch (Throwable ex){
