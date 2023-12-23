@@ -25,10 +25,12 @@ import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
+import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.xzn.shortlink.project.dto.req.ShortLinkCreateReqDTO;
@@ -86,6 +88,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final RedissonClient redissonClient;
     private final LinkAccessStatsMapper linkAccessStatsMapper;
     private final LinkLocaleStatsMapper linkLocaleStatsMapper;
+    private final LinkOsStatsMapper linkOsStatsMapper;
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
@@ -402,8 +405,18 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .gid(gid)
                     .date(new Date())
                     .build();
-                // 插入数据
-                linkLocaleStatsMapper.shortLinkLocalStats(linkLocaleStatsDO);
+                // 插入国家地区数据
+                linkLocaleStatsMapper.shortLinkLocaleStats(linkLocaleStatsDO);
+
+                LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
+                    .os(LinkUtil.getOs((HttpServletRequest)request))
+                    .cnt(1)
+                    .fullShortUrl(fullShortUrl)
+                    .gid(gid)
+                    .date(new Date())
+                    .build();
+                // 插入操作系统数据
+                linkOsStatsMapper.shortLinkOsStats(linkOsStatsDO);
             }
 
         }catch (Throwable ex){

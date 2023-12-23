@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@TableName("t_link_locale_stats")
-public class LinkLocaleStatsDO extends BaseDO {
+@TableName("t_link_os_stats")
+public class LinkOsStatsDO extends BaseDO {
     /**
      * id
      */
@@ -44,23 +44,9 @@ public class LinkLocaleStatsDO extends BaseDO {
     private Integer cnt;
 
     /**
-     * 省份名称
+     * 操作系统
      */
-    private String province;
+    private String os;
 
-    /**
-     * 市名称
-     */
-    private String city;
-
-    /**
-     * 城市编码
-     */
-    private String adcode;
-
-    /**
-     * 国家标识
-     */
-    private String country;
 
 }
