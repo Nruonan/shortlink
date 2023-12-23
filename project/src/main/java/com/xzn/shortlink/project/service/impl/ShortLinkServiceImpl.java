@@ -7,6 +7,8 @@ import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GO
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.Week;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -34,14 +36,18 @@ import com.xzn.shortlink.project.util.HashUtil;
 import com.xzn.shortlink.project.util.LinkUtil;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -274,9 +280,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     ((HttpServletResponse) response).sendRedirect("/page/notfound");
                     return;
                 }
+                shortLinkStats(fullShortUrl,shortLinkDO.getGid(),request,response);
                 // 重定向短链接
                 ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
-                shortLinkStats(fullShortUrl,shortLinkDO.getGid(),request,response);
+
                 // 向redis设置短链接，并添加过期时间
                 stringRedisTemplate.opsForValue().set(
                     (String.format(GOTO_SHORT_LINK_KEY, fullShortUrl)),
@@ -289,20 +296,67 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     }
 
     private void  shortLinkStats(String fullShortUrl,String gid,ServletRequest request, ServletResponse response){
+        // 获取cookie
+        Cookie[] cookies = ((HttpServletRequest) request).getCookies();
+        // 判断是否利用cookie访问
+        AtomicBoolean uvFirstFlag = new AtomicBoolean();
         try{
+            // 添加cookie
+            Runnable addResponseCookieTask = () ->{
+                // 生成uv的UUID
+                String uv = UUID.fastUUID().toString();
+                // 生成一个cookie
+                Cookie uvCookie = new Cookie("uv", uv);
+                // 设置cookie的时间
+                uvCookie.setMaxAge(60 * 60 * 24 * 30);
+                // 设置cookie作用域 （短链接）
+                uvCookie.setPath(StrUtil.sub(fullShortUrl,fullShortUrl.indexOf("/"),fullShortUrl.length()));
+                // 往响应体添加cookie
+                ((HttpServletResponse)response).addCookie(uvCookie);
+                // 设置为初始利用cookie访问
+                uvFirstFlag.set(Boolean.TRUE);
+                // 往redis添加uv
+                stringRedisTemplate.opsForSet().add("short-link:stats:uv:" +fullShortUrl, uv);
+            };
+            if(ArrayUtil.isNotEmpty(cookies)){
+                // 如果cookie不为空
+                Arrays.stream(cookies)
+                    // 查找uv的cookie值
+                    .filter(each -> Objects.equals(each.getName(),"uv"))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .ifPresentOrElse(each ->{
+                        // 尝试利用set数据结构添加
+                        Long add = stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl,each);
+                        // 添加成功应该大于0，不为null，否则为false
+                        uvFirstFlag.set(add != null && add > 0L);
+                    },addResponseCookieTask);
+            }else{
+                // cookie为空，则执行上列语句
+                addResponseCookieTask.run();
+            }
+            // 获取用户访问的ip
+            String remoteAddr = LinkUtil.getActualIp(((HttpServletRequest) request));
+            // 添加到redis
+            Long uipAdded = stringRedisTemplate.opsForSet().add("short-link:stats:uip:" + fullShortUrl, remoteAddr);
+            // 判断是否重复加入
+            boolean uipFirstFlag = uipAdded != null && uipAdded >0;
+            // 判断gid是否为null
             if(StrUtil.isBlank(gid)){
                 LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                     .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
                 ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
                 gid = shortLinkGotoDO.getGid();
             }
+
             int hour = DateUtil.hour(new Date(),true);
             Week week = DateUtil.dayOfWeekEnum(new Date());
             int weekValue = week.getIso8601Value();
             LinkAccessStatsDO linkAccessStatsDO = LinkAccessStatsDO.builder()
                 .pv(1)
-                .uv(1)
-                .uip(1)
+                // 如果为true，则第一次访问，后续则为0
+                .uv(uvFirstFlag.get() ? 1 : 0)
+                .uip(uipFirstFlag ? 1 : 0)
                 .hour(hour)
                 .fullShortUrl(fullShortUrl)
                 .weekday(weekValue)
