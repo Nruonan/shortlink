@@ -103,6 +103,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
         GroupDo groupDo = baseMapper.selectOne(updateWrapper);
         groupDo.setDelFlag(1);
         baseMapper.update(groupDo,updateWrapper);
+        // TODO 删除分组后把分组下的短链接丢到回收站
     }
 
     @Override
