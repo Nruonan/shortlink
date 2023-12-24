@@ -50,10 +50,11 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
         "FROM " +
         "    t_link_access_stats " +
         "WHERE " +
-        "    gid = #{param.gid} " +
+        "    full_short_url = #{param.fullShortUrl} " +
+        " AND   gid = #{param.gid} " +
         "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
         "GROUP BY " +
-        "    gid, hour;")
+        "    full_short_url,gid, hour;")
     List<LinkAccessStatsDO> listHourStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
     /**
      * 根据分组获取一周基础监控数据
