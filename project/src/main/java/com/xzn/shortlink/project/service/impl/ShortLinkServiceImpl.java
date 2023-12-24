@@ -23,12 +23,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzn.shortlink.project.common.convention.exception.ClientException;
 import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
+import com.xzn.shortlink.project.dao.entity.LinkAccessLogsDO;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
+import com.xzn.shortlink.project.dao.mapper.LinkAccessLogsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkBrowserStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
@@ -59,6 +61,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +95,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkLocaleStatsMapper linkLocaleStatsMapper;
     private final LinkOsStatsMapper linkOsStatsMapper;
     private final LinkBrowserStatsMapper linkBrowserStatsMapper;
+    private final LinkAccessLogsMapper linkAccessLogsMapper;
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
@@ -318,12 +322,13 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 判断是否利用cookie访问
         AtomicBoolean uvFirstFlag = new AtomicBoolean();
         try{
+            AtomicReference<String> uv = new AtomicReference<>();
             // 添加cookie
             Runnable addResponseCookieTask = () ->{
                 // 生成uv的UUID
-                String uv = UUID.fastUUID().toString();
+                uv.set(UUID.fastUUID().toString());
                 // 生成一个cookie
-                Cookie uvCookie = new Cookie("uv", uv);
+                Cookie uvCookie = new Cookie("uv", uv.get());
                 // 设置cookie的时间
                 uvCookie.setMaxAge(60 * 60 * 24 * 30);
                 // 设置cookie作用域 （短链接）
@@ -333,7 +338,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 设置为初始利用cookie访问
                 uvFirstFlag.set(Boolean.TRUE);
                 // 往redis添加uv
-                stringRedisTemplate.opsForSet().add("short-link:stats:uv:" +fullShortUrl, uv);
+                stringRedisTemplate.opsForSet().add("short-link:stats:uv:" +fullShortUrl, uv.get());
             };
             if(ArrayUtil.isNotEmpty(cookies)){
                 // 如果cookie不为空
@@ -343,6 +348,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .findFirst()
                     .map(Cookie::getValue)
                     .ifPresentOrElse(each ->{
+                        uv.set(each);
                         // 尝试利用set数据结构添加
                         Long add = stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl,each);
                         // 添加成功应该大于0，不为null，否则为false
@@ -412,8 +418,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 linkLocaleStatsMapper.shortLinkLocaleStats(linkLocaleStatsDO);
 
                 // 插入操作系统数据
+                String os = LinkUtil.getOs((HttpServletRequest) request);
                 LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
-                    .os(LinkUtil.getOs((HttpServletRequest)request))
+                    .os(os)
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
                     .gid(gid)
@@ -422,14 +429,25 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 linkOsStatsMapper.shortLinkOsStats(linkOsStatsDO);
 
                 // 插入浏览器数据
+                String browser = LinkUtil.getBrowser((HttpServletRequest) request);
                 LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
-                    .browser(LinkUtil.getBrowser((HttpServletRequest) request))
+                    .browser(browser)
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
                     .gid(gid)
                     .date(new Date())
                     .build();
                 linkBrowserStatsMapper.shortLinkBrowserStats(linkBrowserStatsDO);
+
+                LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
+                    .ip(remoteAddr)
+                    .os(os)
+                    .browser(browser)
+                    .fullShortUrl(fullShortUrl)
+                    .gid(gid)
+                    .user(uv.get())
+                    .build();
+                linkAccessLogsMapper.insert(linkAccessLogsDO);
             }
 
         }catch (Throwable ex){
