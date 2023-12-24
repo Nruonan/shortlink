@@ -2,8 +2,12 @@ package com.xzn.shortlink.project.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xzn.shortlink.project.dao.entity.LinkNetworkStatsDO;
+import com.xzn.shortlink.project.dto.req.ShortLinkStatsReqDTO;
+import java.util.HashMap;
+import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * @author Nruonan
@@ -17,4 +21,19 @@ public interface LinkNetworkStatsMapper extends BaseMapper<LinkNetworkStatsDO> {
         "VALUES( #{linkNetworkStats.fullShortUrl}, #{linkNetworkStats.gid}, #{linkNetworkStats.date}, #{linkNetworkStats.cnt}, #{linkNetworkStats.network}, NOW(), NOW(), 0) ON DUPLICATE KEY UPDATE "
         + "cnt = cnt +  #{linkNetworkStats.cnt}; ")
     void shortLinkNetworkStats(@Param("linkNetworkStats") LinkNetworkStatsDO linkNetworkStatsDO);
+    /**
+     * 根据短链接获取指定日期内网络监控数据
+     */
+    @Select("SELECT " +
+        "    network, " +
+        "    SUM(cnt) AS count " +
+        "FROM " +
+        "    t_link_network_stats " +
+        "WHERE " +
+        "    full_short_url = #{param.fullShortUrl} " +
+        "    AND gid = #{param.gid} " +
+        "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
+        "GROUP BY " +
+        "    full_short_url, gid, network;")
+    List<HashMap<String, Object>> listNetworkStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 }
