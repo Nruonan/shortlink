@@ -28,6 +28,7 @@ import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkDeviceStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkNetworkStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
@@ -36,6 +37,7 @@ import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkBrowserStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkDeviceStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
+import com.xzn.shortlink.project.dao.mapper.LinkNetworkStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
@@ -99,6 +101,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkBrowserStatsMapper linkBrowserStatsMapper;
     private final LinkAccessLogsMapper linkAccessLogsMapper;
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
+    private final LinkNetworkStatsMapper linkNetworkStatsMapper;
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
@@ -462,6 +465,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .date(new Date())
                     .build();
                 linkDeviceStatsMapper.shortLinkDeviceStats(linkDeviceStatsDO);
+
+                // 插入网络数据
+                String network = LinkUtil.getNetwork((HttpServletRequest) request);
+                LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
+                    .network(network)
+                    .cnt(1)
+                    .fullShortUrl(fullShortUrl)
+                    .gid(gid)
+                    .date(new Date())
+                    .build();
+                linkNetworkStatsMapper.shortLinkNetworkStats(linkNetworkStatsDO);
             }
 
         }catch (Throwable ex){
