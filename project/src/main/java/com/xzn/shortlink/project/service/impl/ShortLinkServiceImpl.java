@@ -26,6 +26,7 @@ import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
 import com.xzn.shortlink.project.dao.entity.LinkAccessLogsDO;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkDeviceStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
@@ -33,6 +34,7 @@ import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessLogsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkBrowserStatsMapper;
+import com.xzn.shortlink.project.dao.mapper.LinkDeviceStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
@@ -96,6 +98,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkOsStatsMapper linkOsStatsMapper;
     private final LinkBrowserStatsMapper linkBrowserStatsMapper;
     private final LinkAccessLogsMapper linkAccessLogsMapper;
+    private final LinkDeviceStatsMapper linkDeviceStatsMapper;
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
@@ -438,7 +441,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .date(new Date())
                     .build();
                 linkBrowserStatsMapper.shortLinkBrowserStats(linkBrowserStatsDO);
-
+                // 插入监控日志
                 LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
                     .ip(remoteAddr)
                     .os(os)
@@ -448,6 +451,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .user(uv.get())
                     .build();
                 linkAccessLogsMapper.insert(linkAccessLogsDO);
+
+                // 插入设备数据
+                String device = LinkUtil.getDevice((HttpServletRequest) request);
+                LinkDeviceStatsDO linkDeviceStatsDO = LinkDeviceStatsDO.builder()
+                    .device(device)
+                    .cnt(1)
+                    .fullShortUrl(fullShortUrl)
+                    .gid(gid)
+                    .date(new Date())
+                    .build();
+                linkDeviceStatsMapper.shortLinkDeviceStats(linkDeviceStatsDO);
             }
 
         }catch (Throwable ex){
