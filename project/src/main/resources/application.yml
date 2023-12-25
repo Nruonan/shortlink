@@ -14,6 +14,9 @@ spring:
       host: 8.134.93.74
 #  实现mybatis-plus删除是将del_flag置为1
 mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
   global-config:
     db-config:
       logic-delete-field: delFlag
@@ -30,3 +33,5 @@ short-link:
   stats:
     locale:
       amap-key: 59a7038d5ff971437ca36efc2bce8571
+
+
