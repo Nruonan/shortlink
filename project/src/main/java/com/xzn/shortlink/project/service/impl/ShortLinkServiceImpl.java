@@ -117,15 +117,26 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String fullShortUrl =  requestParam.getDomain() + "/" +shortLinkSuffix;
         // 获取图标
         String favicon = getFavicon(requestParam.getOriginUrl());
-        if(StrUtil.isEmpty(favicon)){
+        if (favicon != null && favicon.length() == 0) {
             favicon = "";
         }
         // 实例化ShortLinkDO
-        ShortLinkDO shortLinkDO = BeanUtil.toBean(requestParam, ShortLinkDO.class);
-        shortLinkDO.setFullShortUrl(requestParam.getDomain() + "/" +shortLinkSuffix);
-        shortLinkDO.setEnableStatus(0);
-        shortLinkDO.setShortUri(shortLinkSuffix);
-        shortLinkDO.setFavicon(favicon);
+        ShortLinkDO shortLinkDO = ShortLinkDO.builder()
+            .domain(requestParam.getDomain())
+            .originUrl(requestParam.getOriginUrl())
+            .gid(requestParam.getGid())
+            .createdType(requestParam.getCreatedType())
+            .validDateType(requestParam.getValidDateType())
+            .validDate(requestParam.getValidDate())
+            .describe(requestParam.getDescribe())
+            .shortUri(shortLinkSuffix)
+            .enableStatus(0)
+            .totalPv(0)
+            .totalUv(0)
+            .totalUip(0)
+            .fullShortUrl(fullShortUrl)
+            .favicon(getFavicon(requestParam.getOriginUrl()))
+            .build();
         ShortLinkGotoDO shortLinkGoto = ShortLinkGotoDO.builder()
             .fullShortUrl(shortLinkDO.getFullShortUrl())
             .gid(requestParam.getGid())
@@ -483,6 +494,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .user(uv.get())
                     .build();
                 linkAccessLogsMapper.insert(linkAccessLogsDO);
+
+                baseMapper.incrementStats(gid,fullShortUrl,1,uvFirstFlag.get() ? 1: 0,uipFirstFlag ? 1 : 0);
             }
 
         }catch (Throwable ex){
