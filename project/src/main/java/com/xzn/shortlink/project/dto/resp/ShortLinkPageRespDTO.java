@@ -49,6 +49,32 @@ public class ShortLinkPageRespDTO {
      * 有效期类型 0：永久有效 1：用户自定义
      */
     private int validDateType;
+    /**
+     * 历史PV
+     */
+    private Integer totalPv;
+    /**
+     * 历史UV
+     */
+    private Integer totalUv;
+    /**
+     * 历史uip
+     */
+    private Integer totalUIp;
+    /**
+     * 今日pv
+     */
+    private Integer todayPv;
+
+    /**
+     * 今日uv
+     */
+    private Integer todayUv;
+
+    /**
+     * 今日ip数
+     */
+    private Integer todayUIp;
 
     /**
      * 有效期
