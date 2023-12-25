@@ -60,7 +60,7 @@ public class ShortLinkPageRespDTO {
     /**
      * 历史uip
      */
-    private Integer totalUIp;
+    private Integer totalUip;
     /**
      * 今日pv
      */

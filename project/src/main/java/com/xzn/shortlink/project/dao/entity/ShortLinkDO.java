@@ -94,7 +94,7 @@ public class ShortLinkDO extends BaseDO {
     /**
      * 历史uip
      */
-    private Integer totalUIp;
+    private Integer totalUip;
 
 
 }
