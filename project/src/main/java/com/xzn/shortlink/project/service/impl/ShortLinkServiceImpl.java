@@ -30,6 +30,7 @@ import com.xzn.shortlink.project.dao.entity.LinkDeviceStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkNetworkStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkStatsTodayDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessLogsMapper;
@@ -39,6 +40,7 @@ import com.xzn.shortlink.project.dao.mapper.LinkDeviceStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkNetworkStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
+import com.xzn.shortlink.project.dao.mapper.LinkStatsTodayMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.xzn.shortlink.project.dto.req.ShortLinkCreateReqDTO;
@@ -102,6 +104,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkAccessLogsMapper linkAccessLogsMapper;
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
     private final LinkNetworkStatsMapper linkNetworkStatsMapper;
+    private final LinkStatsTodayMapper linkStatsTodayMapper;
+
+
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
@@ -494,8 +499,18 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .user(uv.get())
                     .build();
                 linkAccessLogsMapper.insert(linkAccessLogsDO);
-
+                // 添加总计uv等数据到shortLink
                 baseMapper.incrementStats(gid,fullShortUrl,1,uvFirstFlag.get() ? 1: 0,uipFirstFlag ? 1 : 0);
+                // 添加单日uv等数据到shortLink_today
+                LinkStatsTodayDO linkStatsTodayDO = LinkStatsTodayDO.builder()
+                    .gid(gid)
+                    .fullShortUrl(fullShortUrl)
+                    .todayPv(1)
+                    .todayUv(uvFirstFlag.get() ? 1 : 0)
+                    .todayUip(uipFirstFlag ? 1 : 0)
+                    .date(new Date())
+                    .build();
+                linkStatsTodayMapper.shortLinkTodayState(linkStatsTodayDO);
             }
 
         }catch (Throwable ex){
