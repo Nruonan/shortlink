@@ -42,6 +42,8 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
         "    SUM(new_user) AS newUserCnt " +
         "FROM ( " +
         "    SELECT " +
+        /*日期数量大于1，则被认为是老用户（old_user为1）
+         否则被认为是新用户（new_user为1）*/
         "        CASE WHEN COUNT(DISTINCT DATE(create_time)) > 1 THEN 1 ELSE 0 END AS old_user, " +
         "        CASE WHEN COUNT(DISTINCT DATE(create_time)) = 1 AND MAX(create_time) >= #{param.startDate} AND MAX(create_time) <= #{param.endDate} THEN 1 ELSE 0 END AS new_user " +
         "    FROM " +
