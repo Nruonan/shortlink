@@ -102,12 +102,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkAccessLogsMapper linkAccessLogsMapper;
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
     private final LinkNetworkStatsMapper linkNetworkStatsMapper;
-
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
-
-    @Value("${short-link.domain.defualt}")
-    private String createShortLinkDefaultDomain;
 
     @Override
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
@@ -118,30 +114,18 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         */
         // 根据原始连接生成后缀
         String shortLinkSuffix = generateSuffix(requestParam);
-        String fullShortUrl =  createShortLinkDefaultDomain + "/" +shortLinkSuffix;
+        String fullShortUrl =  requestParam.getDomain() + "/" +shortLinkSuffix;
         // 获取图标
         String favicon = getFavicon(requestParam.getOriginUrl());
         if(StrUtil.isEmpty(favicon)){
             favicon = "";
         }
         // 实例化ShortLinkDO
-        ShortLinkDO shortLinkDO = ShortLinkDO.builder()
-            .domain(createShortLinkDefaultDomain)
-            .originUrl(requestParam.getOriginUrl())
-            .gid(requestParam.getGid())
-            .createdType(requestParam.getCreatedType())
-            .validDateType(requestParam.getValidDateType())
-            .validDate(requestParam.getValidDate())
-            .describe(requestParam.getDescribe())
-            .shortUri(shortLinkSuffix)
-            .enableStatus(0)
-            .totalPv(0)
-            .totalUv(0)
-            .totalUip(0)
-            .delTime(0L)
-            .fullShortUrl(fullShortUrl)
-            .favicon(getFavicon(requestParam.getOriginUrl()))
-            .build();
+        ShortLinkDO shortLinkDO = BeanUtil.toBean(requestParam, ShortLinkDO.class);
+        shortLinkDO.setFullShortUrl(requestParam.getDomain() + "/" +shortLinkSuffix);
+        shortLinkDO.setEnableStatus(0);
+        shortLinkDO.setShortUri(shortLinkSuffix);
+        shortLinkDO.setFavicon(favicon);
         ShortLinkGotoDO shortLinkGoto = ShortLinkGotoDO.builder()
             .fullShortUrl(shortLinkDO.getFullShortUrl())
             .gid(requestParam.getGid())
@@ -420,8 +404,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             JSONObject localeResultObj = JSON.parseObject(localeResultStr);
             // 得到信息状态码
             String infocode = localeResultObj.getString("infocode");
-            String actualProvince;
-            String actualCity;
+            String actualProvince = "未知";
+            String actualCity = "未知";
             // 判断获取是否成功
             if(StrUtil.isNotBlank(infocode) && Objects.equals(infocode,"10000")){
                 // 如果成功，获取省份的
@@ -429,9 +413,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 判断是否为大括号
                 boolean unknownFlag = StrUtil.equals(province,"[]");
                 LinkLocaleStatsDO linkLocaleStatsDO = LinkLocaleStatsDO.builder()
-                    .province(actualProvince = unknownFlag ? "未知"  :province )
-                    .city(actualCity = unknownFlag ? "未知" :localeResultObj.getString("city") )
-                    .adcode(unknownFlag ? "未知" :localeResultObj.getString("adcode") )
+                    .province(actualProvince = unknownFlag ? actualProvince : province)
+                    .city(actualCity = unknownFlag ? actualCity : localeResultObj.getString("city"))
+                    .adcode(unknownFlag ? "未知" : localeResultObj.getString("adcode"))
                     .country("中国")
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)

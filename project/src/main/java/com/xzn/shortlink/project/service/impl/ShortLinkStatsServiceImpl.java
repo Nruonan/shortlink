@@ -30,7 +30,9 @@ import com.xzn.shortlink.project.dto.resp.ShortLinkStatsRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkStatsTopIpRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkStatsUvRespDTO;
 import com.xzn.shortlink.project.service.ShortLinkStatsService;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 /**
@@ -269,15 +272,23 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
     }
 
 
+    @SneakyThrows
     @Override
     public IPage<ShortLinkStatsAccessRecordRespDTO> oneShortLinkStatsAccessRecord(
         ShortLinkStatsAccessRecordReqDTO requestParam) {
         // 查询短链接
+        String startDateStr = requestParam.getStartDate();
+        String endDateStr = requestParam.getEndDate();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); // 这个格式应该与你的日期字符串的格式相同
+
+        Date startDate = format.parse(startDateStr);
+        Date endDate = format.parse(endDateStr);
         LambdaQueryWrapper<LinkAccessLogsDO> queryWrapper = Wrappers.lambdaQuery(LinkAccessLogsDO.class)
             .eq(LinkAccessLogsDO::getGid, requestParam.getGid())
             .eq(LinkAccessLogsDO::getFullShortUrl, requestParam.getFullShortUrl())
             // TODO 查找时间有问题
-            //.between(LinkAccessLogsDO::getCreateTime,requestParam.getStartDate(),requestParam.getEndDate())
+            .between(LinkAccessLogsDO::getCreateTime,startDate,endDate)
             .eq(LinkAccessLogsDO::getDelFlag, 0)
             .orderByDesc(LinkAccessLogsDO::getCreateTime);
         // 分页
@@ -289,15 +300,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         List<Map<String, Object>> uvTypeList = linkAccessLogsMapper.selectUvTypeByUsers(
             requestParam.getGid(),
             requestParam.getFullShortUrl(),
-            requestParam.getStartDate(),
-            requestParam.getEndDate(),
+            startDate,
+            endDate,
             userAccessLogsList
         );
         actualResult.getRecords().forEach(each ->{
             String uvType = uvTypeList.stream()
                     .filter(item -> Objects.equals(each.getUser(), item.get("user")))
                     .findFirst()
-                    .map(item -> item.get("user"))
+                    .map(item -> item.get("uvType"))
                     .map(Objects::toString)
                     .orElse("旧访客");
             each.setUvType(uvType);

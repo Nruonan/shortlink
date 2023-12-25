@@ -106,8 +106,8 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     List<Map<String, Object>> selectUvTypeByUsers(
         @Param("gid") String gid,
         @Param("fullShortUrl") String fullShortUrl,
-        @Param("startDate") String startDate,
-        @Param("endDate") String endDate,
+        @Param("startDate") Date startDate,
+        @Param("endDate") Date endDate,
         @Param("userAccessLogsList") List<String> userAccessLogsList
     );
 }
