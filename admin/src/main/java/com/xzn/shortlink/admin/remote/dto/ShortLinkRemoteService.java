@@ -10,6 +10,7 @@ import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRemoveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
+import com.xzn.shortlink.admin.remote.dto.req.ShortLinkGroupStatsAccessRecordReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkGroupStatsReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
@@ -140,4 +141,16 @@ public interface ShortLinkRemoteService {
        return JSON.parseObject(resultPageStr, new TypeReference<>() {
        });
    }
+    /**
+     * 访问分组短链接监控访问数据服务
+     */
+    default Result<IPage<ShortLinkStatsAccessRecordRespDTO>> groupShortLinkStatsAccessRecord(
+        ShortLinkGroupStatsAccessRecordReqDTO requestParam){
+        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(requestParam, false, true);
+        stringObjectMap.remove("orders");
+        stringObjectMap.remove("records");
+        String resultBodyStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/stats/access-record/group", stringObjectMap);
+        return JSON.parseObject(resultBodyStr, new TypeReference<>() {
+        });
+    }
 }
