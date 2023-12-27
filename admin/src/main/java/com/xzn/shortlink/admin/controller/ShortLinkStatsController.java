@@ -3,6 +3,7 @@ package com.xzn.shortlink.admin.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.remote.dto.ShortLinkRemoteService;
+import com.xzn.shortlink.admin.remote.dto.req.ShortLinkGroupStatsReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkStatsReqDTO;
 import com.xzn.shortlink.admin.remote.dto.resp.ShortLinkStatsAccessRecordRespDTO;
@@ -29,7 +30,13 @@ public class ShortLinkStatsController {
     public Result<ShortLinkStatsRespDTO> shortLinkStats(ShortLinkStatsReqDTO requestParam){
         return shortRemoteLinkService.oneShortLinkStats(requestParam);
     }
-
+    /**
+     * 访问组内短链接指定时间内监控数据
+     */
+    @GetMapping("/api/short-link/admin/v1/stats/group")
+    public Result<ShortLinkStatsRespDTO> groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam){
+        return shortRemoteLinkService.groupShortLinkStats(requestParam);
+    }
     /**
      * 访问单个短链接指定时间内访问记录监控数据
      */
@@ -38,4 +45,6 @@ public class ShortLinkStatsController {
         ShortLinkStatsAccessRecordReqDTO requestParam){
         return shortRemoteLinkService.oneShortLinkStatsAccessRecord(requestParam);
     }
+
+
 }

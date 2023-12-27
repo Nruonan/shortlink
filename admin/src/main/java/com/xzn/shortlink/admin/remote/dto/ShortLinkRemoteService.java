@@ -10,6 +10,7 @@ import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRemoveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
+import com.xzn.shortlink.admin.remote.dto.req.ShortLinkGroupStatsReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkStatsAccessRecordReqDTO;
@@ -129,4 +130,14 @@ public interface ShortLinkRemoteService {
         return JSON.parseObject(resultBodyStr, new TypeReference<>() {
         });
     }
+
+   default  Result<ShortLinkStatsRespDTO> groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam){
+       Map<String, Object> requestMap = new HashMap<>();
+       requestMap.put("gid",requestParam.getGid());
+       requestMap.put("startDate",requestParam.getStartDate());
+       requestMap.put("endDate",requestParam.getEndDate());
+       String resultPageStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/stats/group", requestMap);
+       return JSON.parseObject(resultPageStr, new TypeReference<>() {
+       });
+   }
 }
