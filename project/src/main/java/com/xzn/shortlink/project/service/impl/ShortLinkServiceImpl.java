@@ -9,6 +9,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.Week;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -65,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -110,6 +112,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
+    @Value("${short-link.domain.default}")
+    private String createShortLinkDefaultDomain;
     @Override
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
         /*
@@ -119,7 +123,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         */
         // 根据原始连接生成后缀
         String shortLinkSuffix = generateSuffix(requestParam);
-        String fullShortUrl =  requestParam.getDomain() + "/" +shortLinkSuffix;
+        String fullShortUrl =  StrBuilder.create(createShortLinkDefaultDomain) + "/" +shortLinkSuffix;
         // 获取图标
         String favicon = getFavicon(requestParam.getOriginUrl());
         if (favicon != null && favicon.length() == 0) {
@@ -127,7 +131,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
         // 实例化ShortLinkDO
         ShortLinkDO shortLinkDO = ShortLinkDO.builder()
-            .domain(requestParam.getDomain())
+            .domain(createShortLinkDefaultDomain)
             .originUrl(requestParam.getOriginUrl())
             .gid(requestParam.getGid())
             .createdType(requestParam.getCreatedType())
@@ -252,8 +256,13 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response)  {
         // 获取域名
         String serverName = request.getServerName();
+        String serverPort = Optional.of(request.getServerPort())
+            .filter(each -> Objects.equals(each, 80))
+            .map(String::valueOf)
+            .map(each -> ":" + each)
+            .orElse("");
         // 获取完整短链接
-        String fullShortUrl = serverName + "/" + shortUri;
+        String fullShortUrl = serverName + serverPort +  "/" + shortUri;
         // 从redis获取短链接
         String originalLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_SHORT_LINK_KEY, fullShortUrl));
         if(StrUtil.isNotBlank(originalLink)){
