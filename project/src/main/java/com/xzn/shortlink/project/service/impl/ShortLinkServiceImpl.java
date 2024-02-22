@@ -225,6 +225,16 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             baseMapper.delete(updateWrapper);
             baseMapper.insert(shortLinkDO);
         }
+
+        if(!Objects.equals(hasShortLinkDO.getValidDate(),requestParam.getValidDate())
+        || !Objects.equals(hasShortLinkDO.getValidDateType(),requestParam.getValidDateType())){
+            stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
+            if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(new Date())) {
+                if (Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(new Date())){
+                    stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
+                }
+            }
+        }
     }
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
@@ -257,7 +267,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 获取域名
         String serverName = request.getServerName();
         String serverPort = Optional.of(request.getServerPort())
-            .filter(each -> Objects.equals(each, 80))
+            .filter(each -> !Objects.equals(each, 80))
             .map(String::valueOf)
             .map(each -> ":" + each)
             .orElse("");
