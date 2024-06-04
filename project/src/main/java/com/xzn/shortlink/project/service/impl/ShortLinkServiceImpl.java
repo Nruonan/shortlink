@@ -220,15 +220,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     public void updateShortLink(ShortLinkUpdateReqDTO requestParam) {
         // 根绝请求体查询原有短链接
         LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-            .eq(ShortLinkDO::getGid, requestParam.getGid())
             .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
             .eq(ShortLinkDO::getEnableStatus, 0)
             .eq(ShortLinkDO::getDelFlag,0);
         ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
-        // 如果原有短链接不村子
+        // 如果原有短链接不存在
         if(hasShortLinkDO == null){
             throw new ClientException("短链接记录不存在");
         }
+        // 创建短连接新对象
         ShortLinkDO shortLinkDO = ShortLinkDO.builder()
             .domain(hasShortLinkDO.getDomain())
             .shortUri(hasShortLinkDO.getShortUri())
@@ -236,38 +236,54 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             .favicon(hasShortLinkDO.getFavicon())
             .createdType(hasShortLinkDO.getCreatedType())
             .gid(requestParam.getGid())
+            .enableStatus(hasShortLinkDO.getEnableStatus())
             .originUrl(requestParam.getOriginUrl())
             .describe(requestParam.getDescribe())
+            .fullShortUrl(requestParam.getFullShortUrl())
             .validDateType(requestParam.getValidDateType())
             .validDate(requestParam.getValidDate())
             .build();
-        // TODO 两个gid相同
+        // TODO 两个gid相同 替换就的短连接
         if(Objects.equals(hasShortLinkDO.getGid(),requestParam.getGid())){
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
                 .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
-                .eq(ShortLinkDO::getGid, requestParam.getGid())
+                .eq(ShortLinkDO::getGid, hasShortLinkDO.getGid())
                 .eq(ShortLinkDO::getDelFlag, 0)
                 .eq(ShortLinkDO::getEnableStatus, 0)
                 .set(Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()),
                     ShortLinkDO::getValidDate, null);
             baseMapper.update(shortLinkDO,updateWrapper);
         }else{
+            // 否则先删掉老分组的短连接，添加到新的分组里去
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
-                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
+                .eq(ShortLinkDO::getFullShortUrl, hasShortLinkDO.getFullShortUrl())
                 .eq(ShortLinkDO::getGid, hasShortLinkDO.getGid())
                 .eq(ShortLinkDO::getDelFlag, 0)
                 .eq(ShortLinkDO::getEnableStatus, 0);
             baseMapper.delete(updateWrapper);
             baseMapper.insert(shortLinkDO);
         }
+        // 修改goto表中的gid和完整短连接数据
+        LambdaUpdateWrapper<ShortLinkGotoDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkGotoDO.class)
+            .eq(ShortLinkGotoDO::getFullShortUrl, hasShortLinkDO.getFullShortUrl())
+            .eq(ShortLinkGotoDO::getGid, hasShortLinkDO.getGid());
+        ShortLinkGotoDO shortLinkGotoDO = new ShortLinkGotoDO();
+        shortLinkGotoDO.setGid(shortLinkDO.getGid());
+        shortLinkGotoDO.setFullShortUrl(shortLinkDO.getFullShortUrl());
+        shortLinkGotoMapper.update(shortLinkGotoDO,updateWrapper);
+        // 先删除原来短连接的缓存 防止访问错误网址
+        stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
 
-        if(!Objects.equals(hasShortLinkDO.getValidDate(),requestParam.getValidDate())
-        || !Objects.equals(hasShortLinkDO.getValidDateType(),requestParam.getValidDateType())){
-            stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
-            if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(new Date())) {
-                if (Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(new Date())){
-                    stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
-                }
+        // 判断时间是否有效
+        if (hasShortLinkDO.getValidDate() != null && requestParam.getValidDate().after(new Date())) {
+            if (Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(new Date())){
+                //布隆过滤器添加新短链接
+                shortUriCachePenetrationBloomFilter.add(shortLinkDO.getFullShortUrl());
+                // 设置redis过期有效期
+                stringRedisTemplate.opsForValue()
+                    .set(String.format(GOTO_SHORT_LINK_KEY,shortLinkDO.getFullShortUrl()),
+                        requestParam.getOriginUrl(),
+                        LinkUtil.getLinkCacheValidDate(requestParam.getValidDate()),TimeUnit.MILLISECONDS);
             }
         }
     }
