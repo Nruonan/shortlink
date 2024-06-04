@@ -6,6 +6,8 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xzn.shortlink.admin.common.convention.result.Result;
+import com.xzn.shortlink.admin.dto.req.ShortLinkBatchCreateReqDTO;
+import com.xzn.shortlink.admin.dto.resp.ShortLinkBatchCreateRespDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRemoveReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
@@ -150,6 +152,14 @@ public interface ShortLinkRemoteService {
         stringObjectMap.remove("orders");
         stringObjectMap.remove("records");
         String resultBodyStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/stats/access-record/group", stringObjectMap);
+        return JSON.parseObject(resultBodyStr, new TypeReference<>() {
+        });
+    }
+    /**
+     * 批量创建短链接
+     */
+    default Result<ShortLinkBatchCreateRespDTO> batchCreateShortLink(ShortLinkBatchCreateReqDTO requestParam){
+        String resultBodyStr = HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/create/batch", JSON.toJSONString(requestParam));
         return JSON.parseObject(resultBodyStr, new TypeReference<>() {
         });
     }

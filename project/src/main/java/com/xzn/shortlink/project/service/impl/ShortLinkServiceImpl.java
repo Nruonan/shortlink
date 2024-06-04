@@ -44,9 +44,12 @@ import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkStatsTodayMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
+import com.xzn.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
+import com.xzn.shortlink.project.dto.resp.ShortLinkBaseInfoRespDTO;
+import com.xzn.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkGroupQueryRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -60,6 +63,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -179,6 +183,37 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     }
 
 
+    @Override
+    public ShortLinkBatchCreateRespDTO batchCreateShortLink(ShortLinkBatchCreateReqDTO requestParam) {
+        // 获取集合中原始地址和描述
+        List<String> originUrls = requestParam.getOriginUrls();
+        List<String> describes = requestParam.getDescribes();
+        ArrayList<ShortLinkBaseInfoRespDTO> result = new ArrayList<>();
+        for (int i = 0; i < originUrls.size(); i++){
+            // 获取单个短连接实体
+            ShortLinkCreateReqDTO bean = BeanUtil.toBean(requestParam, ShortLinkCreateReqDTO.class);
+            bean.setOriginUrl(originUrls.get(i));
+            bean.setDescribe(describes.get(i));
+            try{
+                // 创建单个短连接
+                ShortLinkCreateRespDTO shortLink = createShortLink(bean);
+                // 创建相应实体
+                ShortLinkBaseInfoRespDTO shortLinkBaseInfoRespDTO = ShortLinkBaseInfoRespDTO.builder()
+                    .fullShortUrl(shortLink.getFullShortUrl())
+                    .originUrl(shortLink.getOriginUrl())
+                    .describe(describes.get(i))
+                    .build();
+                // 将单个短连接重要信息添加链表里
+                result.add(shortLinkBaseInfoRespDTO);
+            }catch (Throwable ex){
+                log.error("批量创建短链接失败，原始参数：{}", originUrls.get(i));
+            }
+        }
+        return ShortLinkBatchCreateRespDTO.builder()
+            .baseLinkInfos(result)
+            .total(result.size()) // 成功个数
+            .build();
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

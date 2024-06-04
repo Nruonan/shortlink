@@ -2,13 +2,19 @@ package com.xzn.shortlink.project.dto.req;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Nruonan
  * @description 短链接创建实体
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ShortLinkCreateReqDTO {
 
 
