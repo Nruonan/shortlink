@@ -33,5 +33,12 @@ short-link:
   stats:
     locale:
       amap-key: 59a7038d5ff971437ca36efc2bce8571
-
+  goto-domain:
+    white-list:
+      enable: true
+      names: '知乎,掘金,博客园'
+      details:
+        - zhihu.com
+        - juejin.cn
+        - cnblogs.com
 

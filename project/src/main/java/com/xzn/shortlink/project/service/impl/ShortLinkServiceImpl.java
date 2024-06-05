@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzn.shortlink.project.common.convention.exception.ClientException;
 import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
+import com.xzn.shortlink.project.config.GotoDomainWhiteListConfiguration;
 import com.xzn.shortlink.project.dao.entity.LinkAccessLogsDO;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
@@ -119,6 +120,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkStatsTodayMapper linkStatsTodayMapper;
     private final LinkStatsTodayService linkStatsTodayService;
     private final DelayShortLinkStatsProducer delayShortLinkStatsProducer;
+    private final GotoDomainWhiteListConfiguration gotoDomainWhiteListConfiguration;
 
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
@@ -132,6 +134,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             2、如果当前的短链接是用过的，但是被误判说没有用过，那么在插入到数据库的时候，就会被数据库的唯一字段，短链接拦截，出现异常
             3、如果在数据库没有拦截，说明没有误判, 获取到的就是没用过的，正常进行，不抛异常
         */
+        verificationWhitelist(requestParam.getOriginUrl());
         // 根据原始连接生成后缀
         String shortLinkSuffix = generateSuffix(requestParam);
         String fullShortUrl =  StrBuilder.create(createShortLinkDefaultDomain) + "/" +shortLinkSuffix;
@@ -225,6 +228,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateShortLink(ShortLinkUpdateReqDTO requestParam) {
+        verificationWhitelist(requestParam.getOriginUrl());
         // 根绝请求体查询原有短链接
         LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
             .eq(ShortLinkDO::getGid, requestParam.getOriginGid())
@@ -762,5 +766,19 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             customGenerateCount++;
         }
         return shortUri;
+    }
+    private void verificationWhitelist(String originUrl) {
+        Boolean enable = gotoDomainWhiteListConfiguration.getEnable();
+        if (enable == null || !enable){
+            throw new ClientException("跳转链接填写错误");
+        }
+        String domain = LinkUtil.extractDomain(originUrl);
+        if (StrUtil.isBlank(domain)) {
+            throw new ClientException("跳转链接填写错误");
+        }
+        List<String> details = gotoDomainWhiteListConfiguration.getDetails();
+        if (!details.contains(domain)) {
+            throw new ClientException("为避免恶意攻击，请生成以下网站跳转链接：" + gotoDomainWhiteListConfiguration.getNames());
+        }
     }
 }
