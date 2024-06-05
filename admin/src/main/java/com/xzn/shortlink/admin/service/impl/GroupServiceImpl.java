@@ -1,11 +1,15 @@
 package com.xzn.shortlink.admin.service.impl;
 
+import static com.xzn.shortlink.admin.common.constant.RedisCacheConstant.LOCK_GROUP_CREATE_KEY;
+
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzn.shortlink.admin.biz.user.UserContext;
+import com.xzn.shortlink.admin.common.convention.exception.ClientException;
 import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.dao.entity.GroupDo;
 import com.xzn.shortlink.admin.dao.mapper.GroupMapper;
@@ -20,17 +24,28 @@ import com.xzn.shortlink.admin.toolkit.RandomGenerator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Nruonan
  * @description
  */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implements GroupService {
     /**
      * 后续重构为 springcloud
      */
+    @Value("${short-link.group.max-num}")
+    private Integer groupMaxNum;
+    private final RedissonClient redissonClient;
+
     ShortLinkRemoteService shortRemoteLinkService = new ShortLinkRemoteService(){};
     @Override
     public void saveGroup(ShortLinkGroupSaveReqDTO requestParam) {
@@ -39,17 +54,34 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
 
     @Override
     public void saveGroup(String username, String groupname) {
-        String gid;
-        do{
-            gid = RandomGenerator.generateRandom();
-        }while(!hasGid(username,gid));
-        GroupDo groupDo = GroupDo.builder()
-            .gid(gid)
-            .sortOrder(0)
-            .username(username)
-            .name(groupname)
-            .build();
-        baseMapper.insert(groupDo);
+        RLock lock = redissonClient.getLock(String.format(LOCK_GROUP_CREATE_KEY,groupname));
+        // 上锁
+        lock.lock();
+        try{
+            // 查询用户的所有分组
+            LambdaQueryWrapper<GroupDo> queryWrapper = Wrappers.lambdaQuery(GroupDo.class)
+                .eq(GroupDo::getUsername,username)
+                .eq(GroupDo::getDelFlag,0);
+            List<GroupDo> groupDos = baseMapper.selectList(queryWrapper);
+            // 若达到20个，就不许创建
+            if (CollUtil.isNotEmpty(groupDos) && groupDos.size() == groupMaxNum){
+                throw new ClientException(String.format("已超出最大分组数：%d", groupMaxNum));
+            }
+            String gid;
+            do{
+                gid = RandomGenerator.generateRandom();
+            }while(!hasGid(username,gid));
+            GroupDo groupDo = GroupDo.builder()
+                .gid(gid)
+                .sortOrder(0)
+                .username(username)
+                .name(groupname)
+                .build();
+            baseMapper.insert(groupDo);
+        }finally {
+            lock.unlock();
+        }
+
     }
 
     @Override
