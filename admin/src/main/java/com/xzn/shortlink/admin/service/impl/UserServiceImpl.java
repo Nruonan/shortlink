@@ -6,6 +6,7 @@ import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_NAME_E
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -21,6 +22,7 @@ import com.xzn.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.xzn.shortlink.admin.dto.resp.UserRespDTO;
 import com.xzn.shortlink.admin.service.GroupService;
 import com.xzn.shortlink.admin.service.UserService;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -114,13 +116,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
         if(userDo == null){
             throw new ClientException("用户不存在！");
         }
-        Boolean hasLogin = stringRedisTemplate.hasKey("login_" + requestParam.getUsername());
-        if(hasLogin != null && hasLogin){
-            throw  new ClientException("用户已登录");
+        // 用户登录后再其他地方在登录
+        Map<Object,Object> hasLoginMap = stringRedisTemplate.opsForHash().entries("login_" + requestParam.getUsername());
+        if(CollUtil.isNotEmpty(hasLoginMap)){
+            String token = hasLoginMap.keySet().stream()
+                .findFirst()
+                .map(Object::toString)
+                .orElseThrow(() -> new ClientException("用户登录错误"));
+            return new UserLoginRespDTO(token);
         }
+
         String uuid = UUID.randomUUID().toString();
         stringRedisTemplate.opsForHash().put("login_"+requestParam.getUsername(),uuid, JSON.toJSONString(requestParam));
-        stringRedisTemplate.expire("login_"+requestParam.getUsername(), 30, TimeUnit.DAYS);
+        stringRedisTemplate.expire("login_"+requestParam.getUsername(), 30, TimeUnit.MINUTES);
         return new UserLoginRespDTO(uuid);
     }
 
