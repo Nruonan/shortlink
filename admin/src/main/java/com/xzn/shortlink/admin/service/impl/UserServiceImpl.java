@@ -11,6 +11,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.protobuf.ServiceException;
 import com.xzn.shortlink.admin.common.convention.exception.ClientException;
 import com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.xzn.shortlink.admin.dao.entity.UserDo;
@@ -107,14 +108,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
     }
 
     @Override
-    public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
+    public UserLoginRespDTO login(UserLoginReqDTO requestParam) throws ServiceException {
         LambdaQueryWrapper<UserDo> queryWrapper = Wrappers.lambdaQuery(UserDo.class)
             .eq(UserDo::getUsername, requestParam.getUsername())
             .eq(UserDo::getPassword, requestParam.getPassword())
             .eq(UserDo::getDelFlag, 0);
         UserDo userDo = baseMapper.selectOne(queryWrapper);
         if(userDo == null){
-            throw new ClientException("用户不存在！");
+            throw new ServiceException("用户不存在！");
         }
         // 用户登录后再其他地方在登录
         Map<Object,Object> hasLoginMap = stringRedisTemplate.opsForHash().entries("login_" + requestParam.getUsername());

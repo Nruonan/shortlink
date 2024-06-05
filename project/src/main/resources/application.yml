@@ -12,6 +12,13 @@ spring:
       port: 6379
       password: 123456
       host: 8.134.93.74
+
+  cloud:
+    sentinel:
+      eager: true
+      transport:
+        dashboard: http://127.0.0.1:8083
+        port: 8719
 #  实现mybatis-plus删除是将del_flag置为1
 mybatis-plus:
   configuration:
@@ -41,4 +48,9 @@ short-link:
         - zhihu.com
         - juejin.cn
         - cnblogs.com
-
+#暴露所有的端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

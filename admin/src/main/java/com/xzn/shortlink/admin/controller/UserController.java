@@ -2,6 +2,7 @@ package com.xzn.shortlink.admin.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import com.google.protobuf.ServiceException;
 import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.common.convention.result.Results;
 import com.xzn.shortlink.admin.dto.req.UserLoginReqDTO;
@@ -77,7 +78,7 @@ public class UserController  {
      *  登录用户
      */
     @PostMapping("/api/short-link/admin/v1/user/login")
-    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam){
+    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam) throws ServiceException {
         return  Results.success(userService.login(requestParam));
     }
 

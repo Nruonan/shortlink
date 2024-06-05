@@ -1,6 +1,7 @@
 package com.xzn.shortlink.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.google.protobuf.ServiceException;
 import com.xzn.shortlink.admin.dao.entity.UserDo;
 import com.xzn.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.xzn.shortlink.admin.dto.req.UserRegisterReqDTO;
@@ -22,7 +23,7 @@ public interface UserService extends IService<UserDo> {
     // 更改用户信息
     void update(UserUpdateReqDTO requestParam);
     // 登录用户
-    UserLoginRespDTO login(UserLoginReqDTO requestParam);
+    UserLoginRespDTO login(UserLoginReqDTO requestParam) throws ServiceException;
     // 检测用户是否登录
     Boolean checkLogin(String token, String username);
     // 退出登录
