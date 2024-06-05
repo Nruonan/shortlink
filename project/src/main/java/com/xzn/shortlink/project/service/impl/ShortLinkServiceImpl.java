@@ -760,7 +760,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             originUrl += System.currentTimeMillis();
             shortUri = HashUtil.hashToBase62(originUrl);
             // 用布隆过滤器判断uri是否已经存在
-            if(!shortUriCachePenetrationBloomFilter.contains(requestParam.getDomain() + "/" + shortUri)){
+            if(!shortUriCachePenetrationBloomFilter.contains(createShortLinkDefaultDomain + "/" + shortUri)){
                 break;
             }
             customGenerateCount++;
