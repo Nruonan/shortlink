@@ -123,6 +123,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Value("${short-link.domain.default}")
     private String createShortLinkDefaultDomain;
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
         /*
             1、如果当前的短链接是没用过的，但是被误判用过了，那也没事，直接会被跳过，继续生成
