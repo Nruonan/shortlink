@@ -11,6 +11,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.dao.entity.LinkAccessLogsDO;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
@@ -76,17 +77,19 @@ public class ShortLinkStatsSaveConsumer{
     private final MessageQueueIdempotentHandler messageQueueIdempotentHandler;
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmqpKey;
+
+
     @RabbitHandler
     public void onMessage(String msg) {
         ShortLinkStatsRecordGroupDTO record = JSON.parseObject(msg,ShortLinkStatsRecordGroupDTO.class);
-//        String keys = RabbitMQConfig.DLX_ROUTING_KEY;
-//                if (!messageQueueIdempotentHandler.isMessageBeingConsumed(keys)) {
-//            // 判断当前的这个消息流程是否执行完成
-//            if (messageQueueIdempotentHandler.isAccomplish(keys)) {
-//                return;
-//            }
-//            throw new ServiceException("消息未完成流程，需要消息队列重试");
-//        }
+        String keys = record.getKey();
+        if (messageQueueIdempotentHandler.isMessageBeingConsumed(keys)) {
+            // 判断当前的这个消息流程是否执行完成
+            if (messageQueueIdempotentHandler.isAccomplish(keys)) {
+               return;
+            }
+            throw new ServiceException("消息未完成流程，需要消息队列重试");
+        }
         try {
             String fullShortUrl = record.getFullShortUrl();
             if (StrUtil.isNotBlank(fullShortUrl)) {
@@ -106,7 +109,9 @@ public class ShortLinkStatsSaveConsumer{
             log.error("记录短链接监控消费异常", ex);
             throw ex;
         }
-       // messageQueueIdempotentHandler.setAccomplish(keys);
+        messageQueueIdempotentHandler.setAccomplish(keys);
+
+
     }
 
     private void actualSaveShortLinkStats(String gid, String fullShortUrl, ShortLinkStatsRecordDTO statsRecord) {
