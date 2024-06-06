@@ -1,4 +1,4 @@
-package com.xzn.shortlink.project.dto.biz;
+package com.xzn.shortlink.project.mq.idempotent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ShortLinkStatsRecordGroupDTO  {
+public class ShortLinkStatsRecordListenerDTO {
     private String key;
     /**
      * 完整短链接

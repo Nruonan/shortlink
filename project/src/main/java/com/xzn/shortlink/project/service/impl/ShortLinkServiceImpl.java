@@ -45,7 +45,7 @@ import com.xzn.shortlink.project.dao.mapper.LinkStatsTodayMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.xzn.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
-import com.xzn.shortlink.project.dto.biz.ShortLinkStatsRecordGroupDTO;
+import com.xzn.shortlink.project.mq.idempotent.ShortLinkStatsRecordListenerDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkPageReqDTO;
@@ -584,7 +584,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     }
     @Override
     public void  shortLinkStats(String fullShortUrl, String gid, ShortLinkStatsRecordDTO statsRecord){
-        ShortLinkStatsRecordGroupDTO recordGroupDTO = ShortLinkStatsRecordGroupDTO.builder()
+        ShortLinkStatsRecordListenerDTO recordGroupDTO = ShortLinkStatsRecordListenerDTO.builder()
             .os(statsRecord.getOs())
             .remoteAddr(statsRecord.getRemoteAddr())
             .browser(statsRecord.getBrowser())

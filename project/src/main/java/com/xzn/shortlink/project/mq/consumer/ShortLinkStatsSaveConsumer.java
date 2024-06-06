@@ -32,7 +32,7 @@ import com.xzn.shortlink.project.dao.mapper.LinkStatsTodayMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.xzn.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
-import com.xzn.shortlink.project.dto.biz.ShortLinkStatsRecordGroupDTO;
+import com.xzn.shortlink.project.mq.idempotent.ShortLinkStatsRecordListenerDTO;
 import com.xzn.shortlink.project.mq.idempotent.MessageQueueIdempotentHandler;
 import com.xzn.shortlink.project.mq.producer.DelayShortLinkStatsProducer;
 import java.util.Date;
@@ -81,7 +81,7 @@ public class ShortLinkStatsSaveConsumer{
 
     @RabbitHandler
     public void onMessage(String msg) {
-        ShortLinkStatsRecordGroupDTO record = JSON.parseObject(msg,ShortLinkStatsRecordGroupDTO.class);
+        ShortLinkStatsRecordListenerDTO record = JSON.parseObject(msg, ShortLinkStatsRecordListenerDTO.class);
         String keys = record.getKey();
         if (messageQueueIdempotentHandler.isMessageBeingConsumed(keys)) {
             // 判断当前的这个消息流程是否执行完成

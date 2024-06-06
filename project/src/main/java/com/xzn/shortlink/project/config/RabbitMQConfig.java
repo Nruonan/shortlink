@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     private static final String QUEUE = "short-link_project-service_queue";
     public static final String EXCHANGE = "short-link_project-service_exchange";
-    public static String DLX_ROUTING_KEY = "short-link_project-service_key";
+    public static String ROUTING_KEY = "short-link_project-service_key";
     /**
      * 自动注入RabbitTemplate模板
      */
