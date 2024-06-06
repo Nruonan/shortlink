@@ -4,6 +4,8 @@ import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_IS
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_SHORT_LINK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GID_UPDATE_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GOTO_SHORT_LINK_KEY;
+import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_LINK_STATS_UIP_KEY;
+import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_LINK_STATS_UV_KEY;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -541,7 +543,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             // 设置为初始利用cookie访问
             uvFirstFlag.set(Boolean.TRUE);
             // 往redis添加uv
-            stringRedisTemplate.opsForSet().add("short-link:stats:uv:" +fullShortUrl, uv.get());
+            stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UV_KEY +fullShortUrl, uv.get());
         };
         if(ArrayUtil.isNotEmpty(cookies)){
             // 如果cookie不为空
@@ -553,7 +555,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .ifPresentOrElse(each ->{
                     uv.set(each);
                     // 尝试利用set数据结构添加
-                    Long add = stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl,each);
+                    Long add = stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UV_KEY + fullShortUrl,each);
                     // 添加成功应该大于0，不为null，否则为false
                     uvFirstFlag.set(add != null && add > 0L);
                 },addResponseCookieTask);
@@ -566,7 +568,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String browser = LinkUtil.getBrowser(((HttpServletRequest) request));
         String device = LinkUtil.getDevice(((HttpServletRequest) request));
         String network = LinkUtil.getNetwork(((HttpServletRequest) request));
-        Long uipAdded = stringRedisTemplate.opsForSet().add("short-link:stats:uip:" + fullShortUrl, remoteAddr);
+        Long uipAdded = stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UIP_KEY + fullShortUrl, remoteAddr);
         boolean uipFirstFlag = uipAdded != null && uipAdded > 0L;
         return ShortLinkStatsRecordDTO.builder()
             .fullShortUrl(fullShortUrl)

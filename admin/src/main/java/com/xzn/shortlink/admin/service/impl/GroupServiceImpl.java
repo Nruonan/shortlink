@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xzn.shortlink.admin.biz.user.UserContext;
+import com.xzn.shortlink.admin.common.biz.user.UserContext;
 import com.xzn.shortlink.admin.common.convention.exception.ClientException;
 import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.dao.entity.GroupDo;

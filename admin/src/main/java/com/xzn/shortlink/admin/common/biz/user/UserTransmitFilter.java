@@ -1,5 +1,6 @@
-package com.xzn.shortlink.admin.biz.user;
+package com.xzn.shortlink.admin.common.biz.user;
 
+import static com.xzn.shortlink.admin.common.constant.RedisCacheConstant.USER_LOGIN_KEY;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_TOKEN_FAIL;
 
 import cn.hutool.core.util.StrUtil;
@@ -50,7 +51,7 @@ public class UserTransmitFilter implements Filter {
                 }
                 Object userInfoJsonStr ;
                 try{
-                    userInfoJsonStr = stringRedisTemplate.opsForHash().get("login_" + username, token);
+                    userInfoJsonStr = stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token);
                     if(userInfoJsonStr == null){
                         throw new ClientException("USER_TOKEN_FAIL");
                     }

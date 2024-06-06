@@ -1,4 +1,4 @@
-package com.xzn.shortlink.admin.biz.user;
+package com.xzn.shortlink.admin.common.biz.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

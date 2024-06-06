@@ -1,6 +1,6 @@
 package com.xzn.shortlink.admin.config;
 
-import com.xzn.shortlink.admin.biz.user.UserTransmitFilter;
+import com.xzn.shortlink.admin.common.biz.user.UserTransmitFilter;
 import com.xzn.shortlink.admin.common.biz.user.UserFlowRiskControlFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

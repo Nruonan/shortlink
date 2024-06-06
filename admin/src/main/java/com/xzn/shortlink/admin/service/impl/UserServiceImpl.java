@@ -1,6 +1,7 @@
 package com.xzn.shortlink.admin.service.impl;
 
 import static com.xzn.shortlink.admin.common.constant.RedisCacheConstant.LOCK_USER_REGISTER_KEY;
+import static com.xzn.shortlink.admin.common.constant.RedisCacheConstant.USER_LOGIN_KEY;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_EXIST;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_NAME_EXIST;
 import static com.xzn.shortlink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
@@ -135,7 +136,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 
     @Override
     public Boolean checkLogin(String token,String username) {
-        return stringRedisTemplate.opsForHash().get("login_"+username,token) != null;
+        return stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY +username,token) != null;
     }
 
     @Override

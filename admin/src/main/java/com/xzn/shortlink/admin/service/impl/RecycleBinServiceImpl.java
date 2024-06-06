@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.xzn.shortlink.admin.biz.user.UserContext;
+import com.xzn.shortlink.admin.common.biz.user.UserContext;
 import com.xzn.shortlink.admin.common.convention.exception.ServiceException;
 import com.xzn.shortlink.admin.common.convention.result.Result;
 import com.xzn.shortlink.admin.dao.entity.GroupDo;
