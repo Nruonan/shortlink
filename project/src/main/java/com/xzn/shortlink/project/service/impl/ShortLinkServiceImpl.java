@@ -163,15 +163,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             baseMapper.insert(shortLinkDO);
             shortLinkGotoMapper.insert(shortLinkGoto);
         }catch (DuplicateKeyException ex){
-            // 1.查数据库shortUrl
-            LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-                .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
-            ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
-            // 2.判断实例对象不为空
-            if(hasShortLinkDO != null){
-                log.warn("短链接：{}重复入库",fullShortUrl);
-                throw new ServiceException("短链接生成重复");
-            }
+            throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
         }
         //布隆过滤器添加该短链接
         shortUriCachePenetrationBloomFilter.add(fullShortUrl);
