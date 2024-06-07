@@ -4,6 +4,7 @@ import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_IS
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_SHORT_LINK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GID_UPDATE_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.LOCK_GOTO_SHORT_LINK_KEY;
+import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_LINK_CREATE_LOCK_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_LINK_STATS_UIP_KEY;
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_LINK_STATS_UV_KEY;
 
@@ -186,7 +187,52 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     @Override
     public ShortLinkCreateRespDTO createShortLinkByLock(ShortLinkCreateReqDTO requestParam) {
-        return null;
+        verificationWhitelist(requestParam.getOriginUrl());
+        String fullShortUrl;
+        RLock lock = redissonClient.getLock(SHORT_LINK_CREATE_LOCK_KEY);
+        lock.lock();
+        try{
+            String shortLinkSuffix = generateSuffix(requestParam);
+            fullShortUrl =  StrBuilder.create(createShortLinkDefaultDomain) + "/" +shortLinkSuffix;
+            ShortLinkDO shortLinkDO = ShortLinkDO.builder()
+                .domain(createShortLinkDefaultDomain)
+                .originUrl(requestParam.getOriginUrl())
+                .gid(requestParam.getGid())
+                .createdType(requestParam.getCreatedType())
+                .validDateType(requestParam.getValidDateType())
+                .validDate(requestParam.getValidDate())
+                .describe(requestParam.getDescribe())
+                .shortUri(shortLinkSuffix)
+                .enableStatus(0)
+                .totalPv(0)
+                .totalUv(0)
+                .totalUip(0)
+                .fullShortUrl(fullShortUrl)
+                .favicon(getFavicon(requestParam.getOriginUrl()))
+                .build();
+            ShortLinkGotoDO shortLinkGoto = ShortLinkGotoDO.builder()
+                .fullShortUrl(shortLinkDO.getFullShortUrl())
+                .gid(requestParam.getGid())
+                .build();
+            try {
+                baseMapper.insert(shortLinkDO);
+                shortLinkGotoMapper.insert(shortLinkGoto);
+            }catch (DuplicateKeyException e){
+                throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
+            }
+            // 设置redis过期有效期
+            stringRedisTemplate.opsForValue()
+                .set(String.format(GOTO_SHORT_LINK_KEY,fullShortUrl),
+                    requestParam.getOriginUrl(),
+                    LinkUtil.getLinkCacheValidDate(requestParam.getValidDate()),TimeUnit.MILLISECONDS);
+        }finally {
+            lock.unlock();
+        }
+        return ShortLinkCreateRespDTO.builder()
+            .fullShortUrl("http://" + fullShortUrl)
+            .originUrl(requestParam.getOriginUrl())
+            .gid(requestParam.getGid())
+            .build();
     }
 
     @Override
