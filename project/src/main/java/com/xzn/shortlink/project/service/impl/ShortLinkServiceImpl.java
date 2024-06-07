@@ -416,25 +416,36 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             RLock lock = redissonClient.getLock(String.format(LOCK_GOTO_SHORT_LINK_KEY, fullShortUrl));
             lock.lock();
             try {
+                // 从redis中获取短链接数据
                 originalLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_SHORT_LINK_KEY, fullShortUrl));
                 if(StrUtil.isNotBlank(originalLink)){
+                    // 跳转短链接
                     ShortLinkStatsRecordDTO statsRecord = buildLinkStatsRecordAndSetUser(fullShortUrl, request, response);
+                    // 统计数据
                     shortLinkStats(fullShortUrl,null,statsRecord);
                     ((HttpServletResponse) response).sendRedirect(originalLink);
                     return;
                 }
+                // 如果为空值表
+                gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY,fullShortUrl));
+                if (StrUtil.isNotBlank(gotoIsNullShortLink)){
+                    // 跳转notfound页面
+                    ((HttpServletResponse)response).sendRedirect("/page/notfound");
+                    return;
+                }
+                // 查询goto表
                 LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                     .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
                 // 得到跳转对象
                 ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
+                // 如果对象不存在这存入空值
                 if (shortLinkGotoDO == null) {
-                    // TODO 需要封控
                     stringRedisTemplate.opsForValue().set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),"-",30,
                         TimeUnit.MINUTES);
                     ((HttpServletResponse) response).sendRedirect("/page/notfound");
                     return;
                 }
-                // 查询
+                // 查询shortlink表
                 LambdaQueryWrapper<ShortLinkDO> linkQueryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                     .eq(ShortLinkDO::getFullShortUrl, fullShortUrl)
                     .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
