@@ -47,6 +47,7 @@ public class UserFlowRiskControlFilter implements Filter {
         } catch (Throwable ex) {
             log.error("执行用户请求流量限制LUA脚本出错", ex);
             returnJson((HttpServletResponse) response, JSON.toJSONString(Results.failure(new ClientException(FLOW_LIMIT_ERROR))));
+            return;
         }
         if (result == null || result > userFlowRiskControlConfiguration.getMaxAccessCount()) {
             returnJson((HttpServletResponse) response, JSON.toJSONString(Results.failure(new ClientException(FLOW_LIMIT_ERROR))));
