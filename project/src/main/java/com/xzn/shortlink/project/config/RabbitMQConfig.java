@@ -47,7 +47,7 @@ public class RabbitMQConfig {
     @Bean
     Binding dlxBinding() {
         return BindingBuilder.bind(nQueue()).to(Exchange())
-            .with(DLX_ROUTING_KEY);
+            .with(ROUTING_KEY);
     }
 
 

@@ -17,7 +17,7 @@ import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import com.xzn.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.xzn.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
-import com.xzn.shortlink.admin.remote.dto.ShortLinkRemoteService;
+import com.xzn.shortlink.admin.remote.dto.ShortLinkActualRemoteService;
 import com.xzn.shortlink.admin.remote.dto.resp.ShortLinkGroupQueryRespDTO;
 import com.xzn.shortlink.admin.service.GroupService;
 import com.xzn.shortlink.admin.toolkit.RandomGenerator;
@@ -45,8 +45,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
     @Value("${short-link.group.max-num}")
     private Integer groupMaxNum;
     private final RedissonClient redissonClient;
+    private final ShortLinkActualRemoteService shortLinkActualRemoteService;
 
-    ShortLinkRemoteService shortRemoteLinkService = new ShortLinkRemoteService(){};
     @Override
     public void saveGroup(ShortLinkGroupSaveReqDTO requestParam) {
         saveGroup(UserContext.getUsername(),requestParam.getName());
@@ -93,7 +93,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implemen
             .orderByDesc(GroupDo::getSortOrder, GroupDo::getUpdateTime);
         List<GroupDo> groupDos = baseMapper.selectList(queryWrapper);
         // 通过gid远程调用获取短链接个数
-        Result<List<ShortLinkGroupQueryRespDTO>> listResult = shortRemoteLinkService.listGroupShortLinkCount(
+        Result<List<ShortLinkGroupQueryRespDTO>> listResult = shortLinkActualRemoteService.listGroupShortLinkCount(
             groupDos.stream().map(GroupDo::getGid).toList());
         // 封装到响应对象
         List<ShortLinkGroupRespDTO> shortLinkGroupRespDTOList = BeanUtil.copyToList(groupDos, ShortLinkGroupRespDTO.class);

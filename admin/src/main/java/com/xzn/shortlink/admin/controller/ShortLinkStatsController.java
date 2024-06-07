@@ -1,8 +1,8 @@
 package com.xzn.shortlink.admin.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzn.shortlink.admin.common.convention.result.Result;
-import com.xzn.shortlink.admin.remote.dto.ShortLinkRemoteService;
+import com.xzn.shortlink.admin.remote.dto.ShortLinkActualRemoteService;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkGroupStatsAccessRecordReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkGroupStatsReqDTO;
 import com.xzn.shortlink.admin.remote.dto.req.ShortLinkStatsAccessRecordReqDTO;
@@ -20,39 +20,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ShortLinkStatsController {
-    /**
-     * 后续重构为 springcloud
-     */
-    ShortLinkRemoteService shortRemoteLinkService = new ShortLinkRemoteService(){};
+
+    private final ShortLinkActualRemoteService shortLinkActualRemoteService;
     /**
      * 访问单个短链接指定时间内监控数据
      */
     @GetMapping("/api/short-link/admin/v1/stats")
     public Result<ShortLinkStatsRespDTO> shortLinkStats(ShortLinkStatsReqDTO requestParam){
-        return shortRemoteLinkService.oneShortLinkStats(requestParam);
+        return shortLinkActualRemoteService.oneShortLinkStats(requestParam.getFullShortUrl(),requestParam.getGid(),requestParam.getStartDate(),requestParam.getEndDate());
     }
     /**
      * 访问组内短链接指定时间内监控数据
      */
     @GetMapping("/api/short-link/admin/v1/stats/group")
     public Result<ShortLinkStatsRespDTO> groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam){
-        return shortRemoteLinkService.groupShortLinkStats(requestParam);
+        return shortLinkActualRemoteService.groupShortLinkStats(requestParam.getGid(),requestParam.getStartDate(),requestParam.getEndDate());
     }
     /**
      * 访问单个短链接指定时间内访问记录监控数据
      */
     @GetMapping("/api/short-link/admin/v1/stats/access-record")
-    public Result<IPage<ShortLinkStatsAccessRecordRespDTO>> shortLinkStatsAccessRecord(
+    public Result<Page<ShortLinkStatsAccessRecordRespDTO>> shortLinkStatsAccessRecord(
         ShortLinkStatsAccessRecordReqDTO requestParam){
-        return shortRemoteLinkService.oneShortLinkStatsAccessRecord(requestParam);
+        return shortLinkActualRemoteService.shortLinkStatsAccessRecord(requestParam.getFullShortUrl(), requestParam.getGid(), requestParam.getStartDate(), requestParam.getEndDate());
     }
 
     /**
      * 访问分组短链接指定时间内访问记录监控数据
      */
     @GetMapping("/api/short-link/admin/v1/stats/access-record/group")
-    public Result<IPage<ShortLinkStatsAccessRecordRespDTO>> shortLinkGroupStatsAccessRecord(
+    public Result<Page<ShortLinkStatsAccessRecordRespDTO>> shortLinkGroupStatsAccessRecord(
         ShortLinkGroupStatsAccessRecordReqDTO requestParam){
-        return shortRemoteLinkService.groupShortLinkStatsAccessRecord(requestParam);
+        return shortLinkActualRemoteService.groupShortLinkStatsAccessRecord(requestParam.getGid(),requestParam.getStartDate(),requestParam.getEndDate());
     }
 }
