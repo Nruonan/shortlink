@@ -1,0 +1,414 @@
+2024-06-06 19:52:10,137 INFO SPI service [com.alipay.sofa.jraft.JRaftServiceFactory - com.alipay.sofa.jraft.core.DefaultJRaftServiceFactory] loading.
+
+2024-06-06 19:52:10,191 INFO SPI service [com.alipay.sofa.jraft.rpc.RaftRpcFactory - com.alipay.sofa.jraft.rpc.impl.GrpcRaftRpcFactory] loading.
+
+2024-06-06 19:52:10,328 INFO SPI service [com.alipay.sofa.jraft.util.timer.RaftTimerFactory - com.alipay.sofa.jraft.util.timer.DefaultRaftTimerFactory] loading.
+
+2024-06-06 19:52:10,331 INFO The number of active nodes increment to 1.
+
+2024-06-06 19:52:10,562 INFO Starts FSMCaller successfully.
+
+2024-06-06 19:52:10,571 WARN No data for snapshot reader E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot.
+
+2024-06-06 19:52:10,595 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> init, term=0, lastLogId=LogId [index=0, term=0], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 19:52:10,598 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> start vote and grant vote self, term=0.
+
+2024-06-06 19:52:10,621 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data on windows.
+
+2024-06-06 19:52:10,627 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data, term=1, votedFor=192.168.141.1:7848, cost time=22 ms
+
+2024-06-06 19:52:10,627 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> become leader of group, term=1, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 19:52:10,632 INFO -Djraft.recyclers.maxCapacityPerThread: 4096.
+
+2024-06-06 19:52:10,637 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 19:52:10,637 INFO Start the RaftGroupService successfully.
+
+2024-06-06 19:52:10,651 INFO onLeaderStart: term=1.
+
+2024-06-06 19:52:10,663 INFO The number of active nodes increment to 2.
+
+2024-06-06 19:52:10,705 WARN Channel in TRANSIENT_FAILURE state: 192.168.141.1:7848.
+
+2024-06-06 19:52:10,705 WARN Channel in SHUTDOWN state: 192.168.141.1:7848.
+
+2024-06-06 19:52:10,730 INFO Starts FSMCaller successfully.
+
+2024-06-06 19:52:10,730 WARN No data for snapshot reader E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\snapshot.
+
+2024-06-06 19:52:10,731 INFO Node <naming_instance_metadata/192.168.141.1:7848> init, term=0, lastLogId=LogId [index=0, term=0], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 19:52:10,732 INFO Node <naming_instance_metadata/192.168.141.1:7848> start vote and grant vote self, term=0.
+
+2024-06-06 19:52:10,736 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data on windows.
+
+2024-06-06 19:52:10,736 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data, term=1, votedFor=192.168.141.1:7848, cost time=4 ms
+
+2024-06-06 19:52:10,736 INFO Node <naming_instance_metadata/192.168.141.1:7848> become leader of group, term=1, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 19:52:10,737 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 19:52:10,737 INFO Start the RaftGroupService successfully.
+
+2024-06-06 19:52:10,738 INFO onLeaderStart: term=1.
+
+2024-06-06 19:52:10,742 INFO The number of active nodes increment to 3.
+
+2024-06-06 19:52:10,804 INFO Starts FSMCaller successfully.
+
+2024-06-06 19:52:10,805 WARN No data for snapshot reader E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\snapshot.
+
+2024-06-06 19:52:10,805 INFO Node <naming_service_metadata/192.168.141.1:7848> init, term=0, lastLogId=LogId [index=0, term=0], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 19:52:10,806 INFO Node <naming_service_metadata/192.168.141.1:7848> start vote and grant vote self, term=0.
+
+2024-06-06 19:52:10,808 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data on windows.
+
+2024-06-06 19:52:10,809 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data, term=1, votedFor=192.168.141.1:7848, cost time=2 ms
+
+2024-06-06 19:52:10,809 INFO Node <naming_service_metadata/192.168.141.1:7848> become leader of group, term=1, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 19:52:10,809 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 19:52:10,809 INFO Start the RaftGroupService successfully.
+
+2024-06-06 19:52:10,810 INFO onLeaderStart: term=1.
+
+2024-06-06 20:07:31,400 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\temp on windows.
+
+2024-06-06 20:07:31,400 INFO Deleting snapshot E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\snapshot_1.
+
+2024-06-06 20:07:31,402 INFO Renaming E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\temp to E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\snapshot_1.
+
+2024-06-06 20:16:38,115 INFO Node <naming_service_metadata/192.168.141.1:7848> shutdown, currTerm=1 state=STATE_LEADER.
+
+2024-06-06 20:16:38,116 INFO Fail to find the next candidate.
+
+2024-06-06 20:16:38,116 INFO onLeaderStop: status=Status[ESHUTDOWN<1007>: Raft node is going to quit.].
+
+2024-06-06 20:16:38,119 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data on windows.
+
+2024-06-06 20:16:38,119 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data, term=1, votedFor=192.168.141.1:7848, cost time=3 ms
+
+2024-06-06 20:16:38,119 INFO Shutting down FSMCaller...
+
+2024-06-06 20:16:38,119 INFO onShutdown.
+
+2024-06-06 20:16:38,119 INFO ThreadPool is terminated: JRaft-RPC-Processor, com.alipay.sofa.jraft.util.MetricThreadPoolExecutor@69d23296[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0].
+
+2024-06-06 20:16:38,120 INFO ThreadPool is terminated: JRaft-Node-ScheduleThreadPool, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@70211df5[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0].
+
+2024-06-06 20:16:38,120 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=5000, name='JRaft-ElectionTimer-<naming_service_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,120 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=5000, name='JRaft-VoteTimer-<naming_service_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,120 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=2500, name='JRaft-StepDownTimer-<naming_service_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,120 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=1800000, name='JRaft-SnapshotTimer-<naming_service_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,120 INFO Node <naming_service_metadata/192.168.141.1:7848> shutdown, currTerm=1 state=STATE_SHUTTING.
+
+2024-06-06 20:16:38,120 INFO Stop the RaftGroupService successfully.
+
+2024-06-06 20:16:38,120 INFO Node <naming_instance_metadata/192.168.141.1:7848> shutdown, currTerm=1 state=STATE_LEADER.
+
+2024-06-06 20:16:38,120 INFO Fail to find the next candidate.
+
+2024-06-06 20:16:38,120 INFO The number of active nodes decrement to 2.
+
+2024-06-06 20:16:38,120 INFO onLeaderStop: status=Status[ESHUTDOWN<1007>: Raft node is going to quit.].
+
+2024-06-06 20:16:38,122 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data on windows.
+
+2024-06-06 20:16:38,122 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data, term=1, votedFor=192.168.141.1:7848, cost time=2 ms
+
+2024-06-06 20:16:38,122 INFO Shutting down FSMCaller...
+
+2024-06-06 20:16:38,122 INFO onShutdown.
+
+2024-06-06 20:16:38,122 INFO ThreadPool is terminated: JRaft-RPC-Processor, com.alipay.sofa.jraft.util.MetricThreadPoolExecutor@6f231ced[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0].
+
+2024-06-06 20:16:38,123 INFO ThreadPool is terminated: JRaft-Node-ScheduleThreadPool, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@58867cd5[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0].
+
+2024-06-06 20:16:38,123 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=5000, name='JRaft-ElectionTimer-<naming_instance_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,123 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=5000, name='JRaft-VoteTimer-<naming_instance_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,123 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=2500, name='JRaft-StepDownTimer-<naming_instance_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,123 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=1800000, name='JRaft-SnapshotTimer-<naming_instance_metadata/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,123 INFO Node <naming_instance_metadata/192.168.141.1:7848> shutdown, currTerm=1 state=STATE_SHUTTING.
+
+2024-06-06 20:16:38,123 INFO Stop the RaftGroupService successfully.
+
+2024-06-06 20:16:38,123 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> shutdown, currTerm=1 state=STATE_LEADER.
+
+2024-06-06 20:16:38,123 INFO The number of active nodes decrement to 1.
+
+2024-06-06 20:16:38,123 INFO Fail to find the next candidate.
+
+2024-06-06 20:16:38,123 INFO onLeaderStop: status=Status[ESHUTDOWN<1007>: Raft node is going to quit.].
+
+2024-06-06 20:16:38,125 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data on windows.
+
+2024-06-06 20:16:38,125 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data, term=1, votedFor=192.168.141.1:7848, cost time=2 ms
+
+2024-06-06 20:16:38,125 INFO Shutting down FSMCaller...
+
+2024-06-06 20:16:38,125 INFO onShutdown.
+
+2024-06-06 20:16:38,125 INFO ThreadPool is terminated: JRaft-RPC-Processor, com.alipay.sofa.jraft.util.MetricThreadPoolExecutor@4d18b73a[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0].
+
+2024-06-06 20:16:38,125 INFO ThreadPool is terminated: JRaft-Node-ScheduleThreadPool, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@41294371[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0].
+
+2024-06-06 20:16:38,125 INFO The number of active nodes decrement to 0.
+
+2024-06-06 20:16:38,126 INFO ThreadPool is terminated: JRaft-Global-ElectionTimer, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@6cf0a747[Shutting down, pool size = 2, active threads = 0, queued tasks = 0, completed tasks = 3].
+
+2024-06-06 20:16:38,126 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=5000, name='JRaft-ElectionTimer-<naming_persistent_service_v2/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,126 INFO ThreadPool is terminated: JRaft-Global-VoteTimer, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@51d387d3[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 3].
+
+2024-06-06 20:16:38,126 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=5000, name='JRaft-VoteTimer-<naming_persistent_service_v2/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,127 INFO ThreadPool is terminated: JRaft-Global-StepDownTimer, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@58fef7f7[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 1758].
+
+2024-06-06 20:16:38,128 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=2500, name='JRaft-StepDownTimer-<naming_persistent_service_v2/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,128 INFO ThreadPool is terminated: JRaft-Global-SnapshotTimer, com.alipay.sofa.jraft.util.MetricScheduledThreadPoolExecutor@3c3c4a71[Shutting down, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 1].
+
+2024-06-06 20:16:38,128 INFO Destroy timer: RepeatedTimer{timeout=null, stopped=true, running=false, destroyed=true, invoking=false, timeoutMs=1800000, name='JRaft-SnapshotTimer-<naming_persistent_service_v2/192.168.141.1:7848>'}.
+
+2024-06-06 20:16:38,128 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> shutdown, currTerm=1 state=STATE_SHUTTING.
+
+2024-06-06 20:16:38,128 INFO Stop the RaftGroupService successfully.
+
+2024-06-06 20:16:38,128 INFO Shutdown managed channel: 192.168.141.1:7848, ManagedChannelOrphanWrapper{delegate=ManagedChannelImpl{logId=10, target=192.168.141.1:7848}}.
+
+2024-06-06 20:16:38,132 INFO Connection disconnected: /192.168.141.1:12177
+
+2024-06-06 20:16:38,135 INFO ThreadPool is terminated: JRaft-RPC-Processor, com.alipay.sofa.jraft.util.MetricThreadPoolExecutor@37df14d1[Shutting down, pool size = 1, active threads = 0, queued tasks = 0, completed tasks = 1280].
+
+2024-06-06 20:26:48,424 INFO SPI service [com.alipay.sofa.jraft.JRaftServiceFactory - com.alipay.sofa.jraft.core.DefaultJRaftServiceFactory] loading.
+
+2024-06-06 20:26:48,492 INFO SPI service [com.alipay.sofa.jraft.rpc.RaftRpcFactory - com.alipay.sofa.jraft.rpc.impl.GrpcRaftRpcFactory] loading.
+
+2024-06-06 20:26:48,724 INFO SPI service [com.alipay.sofa.jraft.util.timer.RaftTimerFactory - com.alipay.sofa.jraft.util.timer.DefaultRaftTimerFactory] loading.
+
+2024-06-06 20:26:48,731 INFO The number of active nodes increment to 1.
+
+2024-06-06 20:26:49,067 INFO Starts FSMCaller successfully.
+
+2024-06-06 20:26:49,084 INFO Loading snapshot, meta=last_included_index: 1
+last_included_term: 1
+peers: "192.168.141.1:7848"
+.
+
+2024-06-06 20:26:49,233 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> onSnapshotLoadDone, last_included_index: 1
+last_included_term: 1
+peers: "192.168.141.1:7848"
+
+
+2024-06-06 20:26:49,234 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> target priority value has changed from: 0, to: -1.
+
+2024-06-06 20:26:49,266 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> init, term=1, lastLogId=LogId [index=1, term=1], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 20:26:49,270 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> start vote and grant vote self, term=1.
+
+2024-06-06 20:26:49,287 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data on windows.
+
+2024-06-06 20:26:49,287 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data, term=2, votedFor=192.168.141.1:7848, cost time=16 ms
+
+2024-06-06 20:26:49,288 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> become leader of group, term=2, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 20:26:49,293 INFO -Djraft.recyclers.maxCapacityPerThread: 4096.
+
+2024-06-06 20:26:49,298 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 20:26:49,298 INFO Start the RaftGroupService successfully.
+
+2024-06-06 20:26:49,322 INFO onLeaderStart: term=2.
+
+2024-06-06 20:26:49,350 INFO The number of active nodes increment to 2.
+
+2024-06-06 20:26:49,454 WARN Channel in TRANSIENT_FAILURE state: 192.168.141.1:7848.
+
+2024-06-06 20:26:49,454 WARN Channel in SHUTDOWN state: 192.168.141.1:7848.
+
+2024-06-06 20:26:49,465 INFO Starts FSMCaller successfully.
+
+2024-06-06 20:26:49,465 WARN No data for snapshot reader E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\snapshot.
+
+2024-06-06 20:26:49,465 INFO Node <naming_instance_metadata/192.168.141.1:7848> target priority value has changed from: 0, to: -1.
+
+2024-06-06 20:26:49,468 INFO Node <naming_instance_metadata/192.168.141.1:7848> init, term=1, lastLogId=LogId [index=1, term=1], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 20:26:49,469 INFO Node <naming_instance_metadata/192.168.141.1:7848> start vote and grant vote self, term=1.
+
+2024-06-06 20:26:49,476 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data on windows.
+
+2024-06-06 20:26:49,476 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data, term=2, votedFor=192.168.141.1:7848, cost time=4 ms
+
+2024-06-06 20:26:49,476 INFO Node <naming_instance_metadata/192.168.141.1:7848> become leader of group, term=2, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 20:26:49,477 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 20:26:49,477 INFO Start the RaftGroupService successfully.
+
+2024-06-06 20:26:49,478 INFO onLeaderStart: term=2.
+
+2024-06-06 20:26:49,483 INFO The number of active nodes increment to 3.
+
+2024-06-06 20:26:49,558 INFO Starts FSMCaller successfully.
+
+2024-06-06 20:26:49,559 WARN No data for snapshot reader E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\snapshot.
+
+2024-06-06 20:26:49,559 INFO Node <naming_service_metadata/192.168.141.1:7848> target priority value has changed from: 0, to: -1.
+
+2024-06-06 20:26:49,560 INFO Node <naming_service_metadata/192.168.141.1:7848> init, term=1, lastLogId=LogId [index=1, term=1], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 20:26:49,561 INFO Node <naming_service_metadata/192.168.141.1:7848> start vote and grant vote self, term=1.
+
+2024-06-06 20:26:49,566 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data on windows.
+
+2024-06-06 20:26:49,566 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data, term=2, votedFor=192.168.141.1:7848, cost time=4 ms
+
+2024-06-06 20:26:49,566 INFO Node <naming_service_metadata/192.168.141.1:7848> become leader of group, term=2, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 20:26:49,566 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 20:26:49,566 INFO Start the RaftGroupService successfully.
+
+2024-06-06 20:26:49,567 INFO onLeaderStart: term=2.
+
+2024-06-06 20:42:49,745 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\snapshot\temp on windows.
+
+2024-06-06 20:42:49,745 INFO Deleting snapshot E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\snapshot\snapshot_2.
+
+2024-06-06 20:42:49,745 INFO Renaming E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\snapshot\temp to E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\snapshot\snapshot_2.
+
+2024-06-06 20:48:46,409 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\snapshot\temp on windows.
+
+2024-06-06 20:48:46,409 INFO Deleting snapshot E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\snapshot\snapshot_2.
+
+2024-06-06 20:48:46,409 INFO Renaming E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\snapshot\temp to E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\snapshot\snapshot_2.
+
+2024-06-06 20:56:44,265 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\temp on windows.
+
+2024-06-06 20:56:44,265 INFO Deleting snapshot E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\snapshot_2.
+
+2024-06-06 20:56:44,265 INFO Renaming E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\temp to E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\snapshot_2.
+
+2024-06-06 20:56:44,266 INFO Deleting snapshot E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\snapshot\snapshot_1.
+
+2024-06-06 23:46:59,197 INFO SPI service [com.alipay.sofa.jraft.JRaftServiceFactory - com.alipay.sofa.jraft.core.DefaultJRaftServiceFactory] loading.
+
+2024-06-06 23:46:59,257 INFO SPI service [com.alipay.sofa.jraft.rpc.RaftRpcFactory - com.alipay.sofa.jraft.rpc.impl.GrpcRaftRpcFactory] loading.
+
+2024-06-06 23:46:59,412 INFO SPI service [com.alipay.sofa.jraft.util.timer.RaftTimerFactory - com.alipay.sofa.jraft.util.timer.DefaultRaftTimerFactory] loading.
+
+2024-06-06 23:46:59,416 INFO The number of active nodes increment to 1.
+
+2024-06-06 23:46:59,631 INFO Starts FSMCaller successfully.
+
+2024-06-06 23:46:59,639 INFO Loading snapshot, meta=last_included_index: 2
+last_included_term: 2
+peers: "192.168.141.1:7848"
+.
+
+2024-06-06 23:46:59,721 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> onSnapshotLoadDone, last_included_index: 2
+last_included_term: 2
+peers: "192.168.141.1:7848"
+
+
+2024-06-06 23:46:59,722 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> target priority value has changed from: 0, to: -1.
+
+2024-06-06 23:46:59,739 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> init, term=2, lastLogId=LogId [index=2, term=2], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 23:46:59,740 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> start vote and grant vote self, term=2.
+
+2024-06-06 23:46:59,754 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data on windows.
+
+2024-06-06 23:46:59,754 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_persistent_service_v2\meta-data, term=3, votedFor=192.168.141.1:7848, cost time=12 ms
+
+2024-06-06 23:46:59,755 INFO Node <naming_persistent_service_v2/192.168.141.1:7848> become leader of group, term=3, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 23:46:59,757 INFO -Djraft.recyclers.maxCapacityPerThread: 4096.
+
+2024-06-06 23:46:59,759 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 23:46:59,759 INFO Start the RaftGroupService successfully.
+
+2024-06-06 23:46:59,767 INFO onLeaderStart: term=3.
+
+2024-06-06 23:46:59,775 INFO The number of active nodes increment to 2.
+
+2024-06-06 23:46:59,817 WARN Channel in TRANSIENT_FAILURE state: 192.168.141.1:7848.
+
+2024-06-06 23:46:59,817 WARN Channel in SHUTDOWN state: 192.168.141.1:7848.
+
+2024-06-06 23:46:59,838 INFO Starts FSMCaller successfully.
+
+2024-06-06 23:46:59,839 INFO Loading snapshot, meta=last_included_index: 2
+last_included_term: 2
+peers: "192.168.141.1:7848"
+.
+
+2024-06-06 23:46:59,849 INFO Node <naming_instance_metadata/192.168.141.1:7848> onSnapshotLoadDone, last_included_index: 2
+last_included_term: 2
+peers: "192.168.141.1:7848"
+
+
+2024-06-06 23:46:59,849 INFO Node <naming_instance_metadata/192.168.141.1:7848> target priority value has changed from: 0, to: -1.
+
+2024-06-06 23:46:59,850 INFO Node <naming_instance_metadata/192.168.141.1:7848> init, term=2, lastLogId=LogId [index=2, term=2], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 23:46:59,850 INFO Node <naming_instance_metadata/192.168.141.1:7848> start vote and grant vote self, term=2.
+
+2024-06-06 23:46:59,853 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data on windows.
+
+2024-06-06 23:46:59,853 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_instance_metadata\meta-data, term=3, votedFor=192.168.141.1:7848, cost time=2 ms
+
+2024-06-06 23:46:59,853 INFO Node <naming_instance_metadata/192.168.141.1:7848> become leader of group, term=3, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 23:46:59,853 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 23:46:59,853 INFO Start the RaftGroupService successfully.
+
+2024-06-06 23:46:59,854 INFO onLeaderStart: term=3.
+
+2024-06-06 23:46:59,856 INFO The number of active nodes increment to 3.
+
+2024-06-06 23:46:59,913 INFO Starts FSMCaller successfully.
+
+2024-06-06 23:46:59,915 INFO Loading snapshot, meta=last_included_index: 2
+last_included_term: 2
+peers: "192.168.141.1:7848"
+.
+
+2024-06-06 23:46:59,926 INFO Node <naming_service_metadata/192.168.141.1:7848> onSnapshotLoadDone, last_included_index: 2
+last_included_term: 2
+peers: "192.168.141.1:7848"
+
+
+2024-06-06 23:46:59,927 INFO Node <naming_service_metadata/192.168.141.1:7848> target priority value has changed from: 0, to: -1.
+
+2024-06-06 23:46:59,928 INFO Node <naming_service_metadata/192.168.141.1:7848> init, term=2, lastLogId=LogId [index=2, term=2], conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 23:46:59,928 INFO Node <naming_service_metadata/192.168.141.1:7848> start vote and grant vote self, term=2.
+
+2024-06-06 23:46:59,930 WARN Unable to fsync directory E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data on windows.
+
+2024-06-06 23:46:59,931 INFO Save raft meta, path=E:\offer\shortlink\nacos\data\protocol\raft\naming_service_metadata\meta-data, term=3, votedFor=192.168.141.1:7848, cost time=2 ms
+
+2024-06-06 23:46:59,931 INFO Node <naming_service_metadata/192.168.141.1:7848> become leader of group, term=3, conf=192.168.141.1:7848, oldConf=.
+
+2024-06-06 23:46:59,931 WARN RPC server is not started in RaftGroupService.
+
+2024-06-06 23:46:59,931 INFO Start the RaftGroupService successfully.
+
+2024-06-06 23:46:59,932 INFO onLeaderStart: term=3.
+

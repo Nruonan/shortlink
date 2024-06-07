@@ -1,0 +1,296 @@
+2024-06-06 19:52:04,387 INFO Starting Nacos v2.1.1 using Java 19.0.2 on LAPTOP-NBJHBVTO with PID 22148 (E:\offer\shortlink\nacos\target\nacos-server.jar started by Nruonan in E:\offer\shortlink\nacos\bin)
+
+2024-06-06 19:52:04,388 INFO The following 1 profile is active: "standalone"
+
+2024-06-06 19:52:07,066 INFO Tomcat initialized with port(s): 8848 (http)
+
+2024-06-06 19:52:07,068 INFO Loaded Apache Tomcat Native library [2.0.4] using APR version [1.7.4].
+
+2024-06-06 19:52:07,068 INFO APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true], UDS [true].
+
+2024-06-06 19:52:07,068 INFO APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+
+2024-06-06 19:52:07,073 INFO OpenSSL successfully initialized [OpenSSL 3.0.9 30 May 2023]
+
+2024-06-06 19:52:07,080 INFO Starting service [Tomcat]
+
+2024-06-06 19:52:07,081 INFO Starting Servlet engine: [Apache Tomcat/9.0.63]
+
+2024-06-06 19:52:07,161 INFO Initializing Spring embedded WebApplicationContext
+
+2024-06-06 19:52:07,161 INFO Root WebApplicationContext: initialization completed in 2716 ms
+
+2024-06-06 19:52:07,476 INFO Nacos-related cluster resource initialization
+
+2024-06-06 19:52:07,481 INFO Load com.alibaba.nacos.core.ability.RemoteAbilityInitializer for ServerAbilityInitializer
+
+2024-06-06 19:52:07,481 INFO Load com.alibaba.nacos.naming.ability.NamingAbilityInitializer for ServerAbilityInitializer
+
+2024-06-06 19:52:07,483 INFO The cluster resource is initialized
+
+2024-06-06 19:52:07,509 INFO Get Distro config from env, DistroConfig{syncDelayMillis=1000, syncTimeoutMillis=3000, syncRetryDelayMillis=3000, verifyIntervalMillis=5000, verifyTimeoutMillis=3000, loadDataRetryDelayMillis=30000}
+
+2024-06-06 19:52:08,177 INFO HikariPool-1 - Starting...
+
+2024-06-06 19:52:08,185 WARN Registered driver with driverClassName=org.apache.derby.jdbc.EmbeddedDriver was not found, trying direct instantiation.
+
+2024-06-06 19:52:08,626 INFO HikariPool-1 - Driver does not support get/set network timeout for connections. (Feature not implemented: No details.)
+
+2024-06-06 19:52:08,628 INFO HikariPool-1 - Start completed.
+
+2024-06-06 19:52:11,332 INFO Adding welcome page: class path resource [static/index.html]
+
+2024-06-06 19:52:11,675 WARN You are asking Spring Security to ignore Ant [pattern='/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+
+2024-06-06 19:52:11,676 INFO Will not secure Ant [pattern='/**']
+
+2024-06-06 19:52:11,704 INFO Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@d499c13, org.springframework.security.web.context.SecurityContextPersistenceFilter@3e8799f, org.springframework.security.web.header.HeaderWriterFilter@57a6a933, org.springframework.security.web.csrf.CsrfFilter@516592b1, org.springframework.security.web.authentication.logout.LogoutFilter@75fd65c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@270d43a7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@53d9826f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2ceca2ef, org.springframework.security.web.session.SessionManagementFilter@f1266c6, org.springframework.security.web.access.ExceptionTranslationFilter@6f3f0ae]
+
+2024-06-06 19:52:11,738 INFO Exposing 1 endpoint(s) beneath base path '/actuator'
+
+2024-06-06 19:52:11,782 INFO Tomcat started on port(s): 8848 (http) with context path '/nacos'
+
+2024-06-06 19:52:11,806 INFO Started Nacos in 8.782 seconds (JVM running for 9.35)
+
+2024-06-06 19:52:11,806 INFO Nacos started successfully in stand alone mode. use embedded storage
+
+2024-06-06 19:52:30,446 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 19:52:30,449 INFO Get Push config from env, PushConfig{pushTaskDelay=500, pushTaskTimeout=5000, pushTaskRetryDelay=1000}
+
+2024-06-06 19:52:38,877 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 19:53:50,869 INFO Initializing Spring DispatcherServlet 'dispatcherServlet'
+
+2024-06-06 19:53:50,869 INFO Initializing Servlet 'dispatcherServlet'
+
+2024-06-06 19:53:50,870 INFO Completed initialization in 1 ms
+
+2024-06-06 19:59:30,129 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 19:59:53,602 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:00:13,659 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:00:37,575 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:02:09,144 WARN clearConfigHistory start
+
+2024-06-06 20:02:09,146 WARN clearConfigHistory, getBeforeStamp:2024-05-07 20:02:09.0, pageSize:1000
+
+2024-06-06 20:02:09,165 INFO [capacityManagement] start correct usage
+
+2024-06-06 20:02:09,180 INFO [capacityManagement] end correct usage, cost: 0.0139296s
+
+2024-06-06 20:12:09,182 INFO [capacityManagement] start correct usage
+
+2024-06-06 20:12:09,183 INFO [capacityManagement] end correct usage, cost: 0.0012265s
+
+2024-06-06 20:12:09,199 WARN clearConfigHistory start
+
+2024-06-06 20:12:09,199 WARN clearConfigHistory, getBeforeStamp:2024-05-07 20:12:09.0, pageSize:1000
+
+2024-06-06 20:12:57,897 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:12:58,487 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:13:25,274 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:13:25,848 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:16:38,035 WARN [WatchFileCenter] start close
+
+2024-06-06 20:16:38,035 WARN [ConfigServer-HttpClientManager] Start destroying NacosRestTemplate
+
+2024-06-06 20:16:38,035 WARN [WatchFileCenter] start to shutdown this watcher which is watch : E:\offer\shortlink\nacos\data\tps
+
+2024-06-06 20:16:38,036 WARN [NotifyCenter] Start destroying Publisher
+
+2024-06-06 20:16:38,038 WARN [WatchFileCenter] start to shutdown this watcher which is watch : E:\offer\shortlink\nacos\data\loader
+
+2024-06-06 20:16:38,039 WARN [ConfigServer-HttpClientManager] Destruction of the end
+
+2024-06-06 20:16:38,040 WARN [WatchFileCenter] start to shutdown this watcher which is watch : E:\offer\shortlink\nacos\conf
+
+2024-06-06 20:16:38,040 WARN [NotifyCenter] Destruction of the end
+
+2024-06-06 20:16:38,040 WARN [WatchFileCenter] already closed
+
+2024-06-06 20:16:38,043 WARN [ThreadPoolManager] Start destroying ThreadPool
+
+2024-06-06 20:16:38,044 WARN [HttpClientBeanHolder] Start destroying common HttpClient
+
+2024-06-06 20:16:38,047 WARN [HttpClientBeanHolder] Destruction of the end
+
+2024-06-06 20:16:38,057 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 20:26:41,994 INFO Starting Nacos v2.1.1 using Java 19.0.2 on LAPTOP-NBJHBVTO with PID 29052 (E:\offer\shortlink\nacos\target\nacos-server.jar started by Nruonan in E:\offer\shortlink\nacos\bin)
+
+2024-06-06 20:26:41,995 INFO The following 1 profile is active: "standalone"
+
+2024-06-06 20:26:44,757 INFO Tomcat initialized with port(s): 8848 (http)
+
+2024-06-06 20:26:44,759 INFO Loaded Apache Tomcat Native library [2.0.4] using APR version [1.7.4].
+
+2024-06-06 20:26:44,759 INFO APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true], UDS [true].
+
+2024-06-06 20:26:44,759 INFO APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+
+2024-06-06 20:26:44,766 INFO OpenSSL successfully initialized [OpenSSL 3.0.9 30 May 2023]
+
+2024-06-06 20:26:44,777 INFO Starting service [Tomcat]
+
+2024-06-06 20:26:44,778 INFO Starting Servlet engine: [Apache Tomcat/9.0.63]
+
+2024-06-06 20:26:44,861 INFO Initializing Spring embedded WebApplicationContext
+
+2024-06-06 20:26:44,861 INFO Root WebApplicationContext: initialization completed in 2799 ms
+
+2024-06-06 20:26:45,221 INFO Nacos-related cluster resource initialization
+
+2024-06-06 20:26:45,229 INFO Load com.alibaba.nacos.core.ability.RemoteAbilityInitializer for ServerAbilityInitializer
+
+2024-06-06 20:26:45,230 INFO Load com.alibaba.nacos.naming.ability.NamingAbilityInitializer for ServerAbilityInitializer
+
+2024-06-06 20:26:45,232 INFO The cluster resource is initialized
+
+2024-06-06 20:26:45,260 INFO Get Distro config from env, DistroConfig{syncDelayMillis=1000, syncTimeoutMillis=3000, syncRetryDelayMillis=3000, verifyIntervalMillis=5000, verifyTimeoutMillis=3000, loadDataRetryDelayMillis=30000}
+
+2024-06-06 20:26:46,001 INFO HikariPool-1 - Starting...
+
+2024-06-06 20:26:46,009 WARN Registered driver with driverClassName=org.apache.derby.jdbc.EmbeddedDriver was not found, trying direct instantiation.
+
+2024-06-06 20:26:46,366 INFO HikariPool-1 - Driver does not support get/set network timeout for connections. (Feature not implemented: No details.)
+
+2024-06-06 20:26:46,369 INFO HikariPool-1 - Start completed.
+
+2024-06-06 20:26:50,480 INFO Adding welcome page: class path resource [static/index.html]
+
+2024-06-06 20:26:51,087 WARN You are asking Spring Security to ignore Ant [pattern='/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+
+2024-06-06 20:26:51,089 INFO Will not secure Ant [pattern='/**']
+
+2024-06-06 20:26:51,139 INFO Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@41fa769c, org.springframework.security.web.context.SecurityContextPersistenceFilter@21bd128b, org.springframework.security.web.header.HeaderWriterFilter@64da6cbd, org.springframework.security.web.csrf.CsrfFilter@32118208, org.springframework.security.web.authentication.logout.LogoutFilter@c689973, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4b432e53, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@a6c54c3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@40113163, org.springframework.security.web.session.SessionManagementFilter@57e388c3, org.springframework.security.web.access.ExceptionTranslationFilter@5261ec9]
+
+2024-06-06 20:26:51,198 INFO Exposing 1 endpoint(s) beneath base path '/actuator'
+
+2024-06-06 20:26:51,286 INFO Tomcat started on port(s): 8848 (http) with context path '/nacos'
+
+2024-06-06 20:26:51,337 INFO Started Nacos in 10.745 seconds (JVM running for 11.411)
+
+2024-06-06 20:26:51,337 INFO Nacos started successfully in stand alone mode. use embedded storage
+
+2024-06-06 20:36:46,994 WARN clearConfigHistory start
+
+2024-06-06 20:36:46,996 WARN clearConfigHistory, getBeforeStamp:2024-05-07 20:36:46.0, pageSize:1000
+
+2024-06-06 20:36:47,043 INFO [capacityManagement] start correct usage
+
+2024-06-06 20:36:47,068 INFO [capacityManagement] end correct usage, cost: 0.0224076s
+
+2024-06-06 20:46:47,064 WARN clearConfigHistory start
+
+2024-06-06 20:46:47,065 WARN clearConfigHistory, getBeforeStamp:2024-05-07 20:46:47.0, pageSize:1000
+
+2024-06-06 20:46:47,074 INFO [capacityManagement] start correct usage
+
+2024-06-06 20:46:47,074 INFO [capacityManagement] end correct usage, cost: 6.446E-4s
+
+2024-06-06 20:56:47,067 WARN clearConfigHistory start
+
+2024-06-06 20:56:47,067 WARN clearConfigHistory, getBeforeStamp:2024-05-07 20:56:47.0, pageSize:1000
+
+2024-06-06 20:56:47,075 INFO [capacityManagement] start correct usage
+
+2024-06-06 20:56:47,076 INFO [capacityManagement] end correct usage, cost: 9.732E-4s
+
+2024-06-06 21:06:47,070 WARN clearConfigHistory start
+
+2024-06-06 21:06:47,070 WARN clearConfigHistory, getBeforeStamp:2024-05-07 21:06:47.0, pageSize:1000
+
+2024-06-06 21:06:47,078 INFO [capacityManagement] start correct usage
+
+2024-06-06 21:06:47,079 INFO [capacityManagement] end correct usage, cost: 7.21999E-4s
+
+2024-06-06 23:46:53,399 INFO Starting Nacos v2.1.1 using Java 19.0.2 on LAPTOP-NBJHBVTO with PID 24520 (E:\offer\shortlink\nacos\target\nacos-server.jar started by Nruonan in E:\offer\shortlink\nacos\bin)
+
+2024-06-06 23:46:53,400 INFO The following 1 profile is active: "standalone"
+
+2024-06-06 23:46:56,102 INFO Tomcat initialized with port(s): 8848 (http)
+
+2024-06-06 23:46:56,103 INFO Loaded Apache Tomcat Native library [2.0.4] using APR version [1.7.4].
+
+2024-06-06 23:46:56,103 INFO APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true], UDS [true].
+
+2024-06-06 23:46:56,103 INFO APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+
+2024-06-06 23:46:56,108 INFO OpenSSL successfully initialized [OpenSSL 3.0.9 30 May 2023]
+
+2024-06-06 23:46:56,116 INFO Starting service [Tomcat]
+
+2024-06-06 23:46:56,117 INFO Starting Servlet engine: [Apache Tomcat/9.0.63]
+
+2024-06-06 23:46:56,194 INFO Initializing Spring embedded WebApplicationContext
+
+2024-06-06 23:46:56,194 INFO Root WebApplicationContext: initialization completed in 2725 ms
+
+2024-06-06 23:46:56,542 INFO Nacos-related cluster resource initialization
+
+2024-06-06 23:46:56,550 INFO Load com.alibaba.nacos.core.ability.RemoteAbilityInitializer for ServerAbilityInitializer
+
+2024-06-06 23:46:56,550 INFO Load com.alibaba.nacos.naming.ability.NamingAbilityInitializer for ServerAbilityInitializer
+
+2024-06-06 23:46:56,553 INFO The cluster resource is initialized
+
+2024-06-06 23:46:56,587 INFO Get Distro config from env, DistroConfig{syncDelayMillis=1000, syncTimeoutMillis=3000, syncRetryDelayMillis=3000, verifyIntervalMillis=5000, verifyTimeoutMillis=3000, loadDataRetryDelayMillis=30000}
+
+2024-06-06 23:46:57,403 INFO HikariPool-1 - Starting...
+
+2024-06-06 23:46:57,409 WARN Registered driver with driverClassName=org.apache.derby.jdbc.EmbeddedDriver was not found, trying direct instantiation.
+
+2024-06-06 23:46:57,657 INFO HikariPool-1 - Driver does not support get/set network timeout for connections. (Feature not implemented: No details.)
+
+2024-06-06 23:46:57,659 INFO HikariPool-1 - Start completed.
+
+2024-06-06 23:47:00,460 INFO Adding welcome page: class path resource [static/index.html]
+
+2024-06-06 23:47:00,801 WARN You are asking Spring Security to ignore Ant [pattern='/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+
+2024-06-06 23:47:00,802 INFO Will not secure Ant [pattern='/**']
+
+2024-06-06 23:47:00,830 INFO Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2d0b05, org.springframework.security.web.context.SecurityContextPersistenceFilter@3fa21d49, org.springframework.security.web.header.HeaderWriterFilter@91f565d, org.springframework.security.web.csrf.CsrfFilter@4ed5a1b0, org.springframework.security.web.authentication.logout.LogoutFilter@21bd128b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6e31d989, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5261ec9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4b432e53, org.springframework.security.web.session.SessionManagementFilter@3cd26422, org.springframework.security.web.access.ExceptionTranslationFilter@67b355c8]
+
+2024-06-06 23:47:00,856 INFO Exposing 1 endpoint(s) beneath base path '/actuator'
+
+2024-06-06 23:47:00,896 INFO Tomcat started on port(s): 8848 (http) with context path '/nacos'
+
+2024-06-06 23:47:00,916 INFO Started Nacos in 8.799 seconds (JVM running for 9.351)
+
+2024-06-06 23:47:00,916 INFO Nacos started successfully in stand alone mode. use embedded storage
+
+2024-06-06 23:47:12,274 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:47:12,277 INFO Get Push config from env, PushConfig{pushTaskDelay=500, pushTaskTimeout=5000, pushTaskRetryDelay=1000}
+
+2024-06-06 23:47:18,897 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:49:27,565 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:49:33,102 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:54:10,841 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:54:57,920 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:56:58,226 WARN clearConfigHistory start
+
+2024-06-06 23:56:58,236 WARN clearConfigHistory, getBeforeStamp:2024-05-07 23:56:58.0, pageSize:1000
+
+2024-06-06 23:56:58,254 INFO [capacityManagement] start correct usage
+
+2024-06-06 23:56:58,343 INFO [capacityManagement] end correct usage, cost: 0.0871505s
+
+2024-06-06 23:57:20,796 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-06 23:57:20,809 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+

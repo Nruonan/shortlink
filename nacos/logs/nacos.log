@@ -1,0 +1,224 @@
+2024-06-07 00:06:58,344 INFO [capacityManagement] start correct usage
+
+2024-06-07 00:06:58,344 WARN clearConfigHistory start
+
+2024-06-07 00:06:58,351 WARN clearConfigHistory, getBeforeStamp:2024-05-08 00:06:58.0, pageSize:1000
+
+2024-06-07 00:06:58,352 INFO [capacityManagement] end correct usage, cost: 0.001119s
+
+2024-06-07 11:36:46,479 INFO Starting Nacos v2.1.1 using Java 19.0.2 on LAPTOP-NBJHBVTO with PID 24640 (E:\offer\shortlink\nacos\target\nacos-server.jar started by Nruonan in E:\offer\shortlink\nacos\bin)
+
+2024-06-07 11:36:46,480 INFO The following 1 profile is active: "standalone"
+
+2024-06-07 11:36:50,345 INFO Tomcat initialized with port(s): 8848 (http)
+
+2024-06-07 11:36:50,346 INFO Loaded Apache Tomcat Native library [2.0.4] using APR version [1.7.4].
+
+2024-06-07 11:36:50,347 INFO APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true], UDS [true].
+
+2024-06-07 11:36:50,347 INFO APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+
+2024-06-07 11:36:50,353 INFO OpenSSL successfully initialized [OpenSSL 3.0.9 30 May 2023]
+
+2024-06-07 11:36:50,363 INFO Starting service [Tomcat]
+
+2024-06-07 11:36:50,364 INFO Starting Servlet engine: [Apache Tomcat/9.0.63]
+
+2024-06-07 11:36:50,470 INFO Initializing Spring embedded WebApplicationContext
+
+2024-06-07 11:36:50,471 INFO Root WebApplicationContext: initialization completed in 3897 ms
+
+2024-06-07 11:36:50,874 INFO Nacos-related cluster resource initialization
+
+2024-06-07 11:36:50,880 INFO Load com.alibaba.nacos.core.ability.RemoteAbilityInitializer for ServerAbilityInitializer
+
+2024-06-07 11:36:50,880 INFO Load com.alibaba.nacos.naming.ability.NamingAbilityInitializer for ServerAbilityInitializer
+
+2024-06-07 11:36:50,884 INFO The cluster resource is initialized
+
+2024-06-07 11:36:50,921 INFO Get Distro config from env, DistroConfig{syncDelayMillis=1000, syncTimeoutMillis=3000, syncRetryDelayMillis=3000, verifyIntervalMillis=5000, verifyTimeoutMillis=3000, loadDataRetryDelayMillis=30000}
+
+2024-06-07 11:36:51,835 INFO HikariPool-1 - Starting...
+
+2024-06-07 11:36:51,849 WARN Registered driver with driverClassName=org.apache.derby.jdbc.EmbeddedDriver was not found, trying direct instantiation.
+
+2024-06-07 11:36:52,543 INFO HikariPool-1 - Driver does not support get/set network timeout for connections. (Feature not implemented: No details.)
+
+2024-06-07 11:36:52,548 INFO HikariPool-1 - Start completed.
+
+2024-06-07 11:36:58,480 INFO Adding welcome page: class path resource [static/index.html]
+
+2024-06-07 11:36:59,355 WARN You are asking Spring Security to ignore Ant [pattern='/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+
+2024-06-07 11:36:59,357 INFO Will not secure Ant [pattern='/**']
+
+2024-06-07 11:36:59,411 INFO Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@71a3e05c, org.springframework.security.web.context.SecurityContextPersistenceFilter@4b432e53, org.springframework.security.web.header.HeaderWriterFilter@47c7a9e5, org.springframework.security.web.csrf.CsrfFilter@1ddc6db2, org.springframework.security.web.authentication.logout.LogoutFilter@40113163, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@62f11ebb, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@78fe204a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@39c85c1a, org.springframework.security.web.session.SessionManagementFilter@21bd128b, org.springframework.security.web.access.ExceptionTranslationFilter@64da6cbd]
+
+2024-06-07 11:36:59,461 INFO Exposing 1 endpoint(s) beneath base path '/actuator'
+
+2024-06-07 11:36:59,547 INFO Tomcat started on port(s): 8848 (http) with context path '/nacos'
+
+2024-06-07 11:36:59,596 INFO Started Nacos in 14.982 seconds (JVM running for 15.818)
+
+2024-06-07 11:36:59,597 INFO Nacos started successfully in stand alone mode. use embedded storage
+
+2024-06-07 11:37:06,642 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:37:06,646 INFO Get Push config from env, PushConfig{pushTaskDelay=500, pushTaskTimeout=5000, pushTaskRetryDelay=1000}
+
+2024-06-07 11:37:10,702 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:46:53,951 WARN clearConfigHistory start
+
+2024-06-07 11:46:53,952 WARN clearConfigHistory, getBeforeStamp:2024-05-08 11:46:53.0, pageSize:1000
+
+2024-06-07 11:46:54,022 INFO [capacityManagement] start correct usage
+
+2024-06-07 11:46:54,076 INFO [capacityManagement] end correct usage, cost: 0.0532549s
+
+2024-06-07 11:49:35,591 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:49:49,228 WARN Stream Error
+
+io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception$StreamException: Cannot create stream 281 greater than Last-Stream-ID 279 from GOAWAY.
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception.streamError(Http2Exception.java:147)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2Connection$DefaultEndpoint.checkNewStreamAllowed(DefaultHttp2Connection.java:874)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2Connection$DefaultEndpoint.createStream(DefaultHttp2Connection.java:748)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2Connection$DefaultEndpoint.createStream(DefaultHttp2Connection.java:668)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder$FrameReadListener.onHeadersRead(DefaultHttp2ConnectionDecoder.java:330)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2InboundFrameLogger$1.onHeadersRead(Http2InboundFrameLogger.java:65)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader$1.processFragment(DefaultHttp2FrameReader.java:457)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader.readHeadersFrame(DefaultHttp2FrameReader.java:464)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader.processPayloadState(DefaultHttp2FrameReader.java:254)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader.readFrame(DefaultHttp2FrameReader.java:160)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2InboundFrameLogger.readFrame(Http2InboundFrameLogger.java:41)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder.decodeFrame(DefaultHttp2ConnectionDecoder.java:174)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2ConnectionHandler$FrameDecoder.decode(Http2ConnectionHandler.java:378)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:438)
+	at io.grpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:498)
+	at io.grpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:437)
+	at io.grpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:276)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at io.grpc.netty.shaded.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.grpc.netty.shaded.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.grpc.netty.shaded.io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:163)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:714)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:650)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:576)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:493)
+	at io.grpc.netty.shaded.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:989)
+	at io.grpc.netty.shaded.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.grpc.netty.shaded.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+2024-06-07 11:49:52,222 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:56:54,017 WARN clearConfigHistory start
+
+2024-06-07 11:56:54,017 WARN clearConfigHistory, getBeforeStamp:2024-05-08 11:56:54.0, pageSize:1000
+
+2024-06-07 11:56:54,078 INFO [capacityManagement] start correct usage
+
+2024-06-07 11:56:54,078 INFO [capacityManagement] end correct usage, cost: 7.972E-4s
+
+2024-06-07 11:57:14,996 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:57:47,306 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:57:55,628 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:58:20,796 INFO Initializing Spring DispatcherServlet 'dispatcherServlet'
+
+2024-06-07 11:58:20,796 INFO Initializing Servlet 'dispatcherServlet'
+
+2024-06-07 11:58:20,797 INFO Completed initialization in 1 ms
+
+2024-06-07 11:58:59,030 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 11:59:17,084 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:00:07,585 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:00:33,344 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:02:28,896 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:05:04,864 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:05:46,004 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:05:56,057 WARN Stream Error
+
+io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception$StreamException: Cannot create stream 17 greater than Last-Stream-ID 15 from GOAWAY.
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception.streamError(Http2Exception.java:147)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2Connection$DefaultEndpoint.checkNewStreamAllowed(DefaultHttp2Connection.java:874)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2Connection$DefaultEndpoint.createStream(DefaultHttp2Connection.java:748)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2Connection$DefaultEndpoint.createStream(DefaultHttp2Connection.java:668)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder$FrameReadListener.onHeadersRead(DefaultHttp2ConnectionDecoder.java:330)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2InboundFrameLogger$1.onHeadersRead(Http2InboundFrameLogger.java:65)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader$1.processFragment(DefaultHttp2FrameReader.java:457)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader.readHeadersFrame(DefaultHttp2FrameReader.java:464)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader.processPayloadState(DefaultHttp2FrameReader.java:254)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2FrameReader.readFrame(DefaultHttp2FrameReader.java:160)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2InboundFrameLogger.readFrame(Http2InboundFrameLogger.java:41)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder.decodeFrame(DefaultHttp2ConnectionDecoder.java:174)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2ConnectionHandler$FrameDecoder.decode(Http2ConnectionHandler.java:378)
+	at io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:438)
+	at io.grpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:498)
+	at io.grpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:437)
+	at io.grpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:276)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at io.grpc.netty.shaded.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.grpc.netty.shaded.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.grpc.netty.shaded.io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:163)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:714)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:650)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:576)
+	at io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:493)
+	at io.grpc.netty.shaded.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:989)
+	at io.grpc.netty.shaded.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.grpc.netty.shaded.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+2024-06-07 12:05:56,068 INFO [id: 0x291c50ce, L:/192.168.141.1:9848 ! R:/192.168.141.1:9421] ignoring DATA frame for stream 17. Stream sent after GOAWAY sent
+
+2024-06-07 12:06:02,992 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:06:03,976 WARN There are no [com.alibaba.nacos.common.trace.event.naming.SubscribeServiceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:06:03,976 WARN There are no [com.alibaba.nacos.common.trace.event.naming.SubscribeServiceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:06:04,502 WARN There are no [com.alibaba.nacos.common.trace.event.naming.PushServiceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:06:54,019 WARN clearConfigHistory start
+
+2024-06-07 12:06:54,019 WARN clearConfigHistory, getBeforeStamp:2024-05-08 12:06:54.0, pageSize:1000
+
+2024-06-07 12:06:54,079 INFO [capacityManagement] start correct usage
+
+2024-06-07 12:06:54,081 INFO [capacityManagement] end correct usage, cost: 0.0022137s
+
+2024-06-07 12:09:27,504 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:09:27,648 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:09:28,172 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:13:02,497 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:13:03,660 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:13:05,519 WARN There are no [com.alibaba.nacos.common.trace.event.naming.RegisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:13:33,142 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:13:33,242 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+
+2024-06-07 12:13:33,533 WARN There are no [com.alibaba.nacos.common.trace.event.naming.DeregisterInstanceTraceEvent] publishers for this event, please register
+

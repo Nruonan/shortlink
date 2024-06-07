@@ -1,0 +1,138 @@
+2024-06-06 19:52:07,508 WARN naming.distro config will be removed, please use core.protocol.distro replace.
+
+2024-06-06 19:52:07,508 WARN Using naming.distro config to replace core.distro config
+
+2024-06-06 19:52:07,630 INFO open empty service auto clean job, initialDelay : 50000 ms, period : 30000 ms
+
+2024-06-06 19:52:07,630 INFO listen for service meta change
+
+2024-06-06 19:52:07,634 INFO upgrade.state file is not exist
+
+2024-06-06 19:52:10,065 INFO [SelectorManager] Load SelectorContextBuilder(class com.alibaba.nacos.naming.selector.context.CmdbSelectorContextBuilder) contextType(CMDB) successfully.
+
+2024-06-06 19:52:10,065 INFO [SelectorManager] Load SelectorContextBuilder(class com.alibaba.nacos.naming.selector.context.NoneSelectorContextBuilder) contextType(NONE) successfully.
+
+2024-06-06 19:52:10,065 INFO [SelectorManager] Load Selector(class com.alibaba.nacos.naming.selector.LabelSelector) type(label) contextType(CMDB) successfully.
+
+2024-06-06 19:52:10,066 INFO [SelectorManager] Load Selector(class com.alibaba.nacos.naming.selector.NoneSelector) type(none) contextType(NONE) successfully.
+
+2024-06-06 19:52:10,934 INFO Load instance extension handler []
+
+2024-06-06 19:52:30,356 INFO Client connection 1717674750199_127.0.0.1_12231 connect
+
+2024-06-06 19:52:30,446 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-project', ephemeral=true, revision=0}, 1717674750199_127.0.0.1_12231
+
+2024-06-06 19:52:38,747 INFO Client connection 1717674758674_127.0.0.1_12270 connect
+
+2024-06-06 19:52:38,877 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=0}, 1717674758674_127.0.0.1_12270
+
+2024-06-06 19:59:30,128 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=1}, 1717674758674_127.0.0.1_12270
+
+2024-06-06 19:59:30,145 INFO Client connection 1717674758674_127.0.0.1_12270 disconnect, remove instances and subscribers
+
+2024-06-06 19:59:53,486 INFO Client connection 1717675193403_127.0.0.1_12846 connect
+
+2024-06-06 19:59:53,602 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=2}, 1717675193403_127.0.0.1_12846
+
+2024-06-06 20:00:13,659 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=3}, 1717675193403_127.0.0.1_12846
+
+2024-06-06 20:00:13,668 INFO Client connection 1717675193403_127.0.0.1_12846 disconnect, remove instances and subscribers
+
+2024-06-06 20:00:37,451 INFO Client connection 1717675237370_192.168.141.1_12897 connect
+
+2024-06-06 20:00:37,575 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=4}, 1717675237370_192.168.141.1_12897
+
+2024-06-06 20:12:57,897 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=5}, 1717675237370_192.168.141.1_12897
+
+2024-06-06 20:12:57,907 INFO Client connection 1717675237370_192.168.141.1_12897 disconnect, remove instances and subscribers
+
+2024-06-06 20:12:58,487 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-project', ephemeral=true, revision=1}, 1717674750199_127.0.0.1_12231
+
+2024-06-06 20:12:58,496 INFO Client connection 1717674750199_127.0.0.1_12231 disconnect, remove instances and subscribers
+
+2024-06-06 20:13:25,155 INFO Client connection 1717676005083_192.168.141.1_6005 connect
+
+2024-06-06 20:13:25,274 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-project', ephemeral=true, revision=2}, 1717676005083_192.168.141.1_6005
+
+2024-06-06 20:13:25,722 INFO Client connection 1717676005648_192.168.141.1_6006 connect
+
+2024-06-06 20:13:25,848 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=6}, 1717676005648_192.168.141.1_6006
+
+2024-06-06 20:16:38,035 WARN [NamingServerHttpClientManager] Start destroying HTTP-Client
+
+2024-06-06 20:16:38,045 WARN [NamingServerHttpClientManager] Destruction of the end
+
+2024-06-06 20:16:38,057 INFO Client connection 1717676005648_192.168.141.1_6006 disconnect, remove instances and subscribers
+
+2024-06-06 20:16:38,058 INFO Client connection 1717676005083_192.168.141.1_6005 disconnect, remove instances and subscribers
+
+2024-06-06 20:26:45,259 WARN naming.distro config will be removed, please use core.protocol.distro replace.
+
+2024-06-06 20:26:45,259 WARN Using naming.distro config to replace core.distro config
+
+2024-06-06 20:26:45,365 INFO open empty service auto clean job, initialDelay : 50000 ms, period : 30000 ms
+
+2024-06-06 20:26:45,366 INFO listen for service meta change
+
+2024-06-06 20:26:48,293 INFO [SelectorManager] Load SelectorContextBuilder(class com.alibaba.nacos.naming.selector.context.CmdbSelectorContextBuilder) contextType(CMDB) successfully.
+
+2024-06-06 20:26:48,293 INFO [SelectorManager] Load SelectorContextBuilder(class com.alibaba.nacos.naming.selector.context.NoneSelectorContextBuilder) contextType(NONE) successfully.
+
+2024-06-06 20:26:48,294 INFO [SelectorManager] Load Selector(class com.alibaba.nacos.naming.selector.LabelSelector) type(label) contextType(CMDB) successfully.
+
+2024-06-06 20:26:48,295 INFO [SelectorManager] Load Selector(class com.alibaba.nacos.naming.selector.NoneSelector) type(none) contextType(NONE) successfully.
+
+2024-06-06 20:26:49,750 INFO Load instance extension handler []
+
+2024-06-06 23:46:56,586 WARN naming.distro config will be removed, please use core.protocol.distro replace.
+
+2024-06-06 23:46:56,586 WARN Using naming.distro config to replace core.distro config
+
+2024-06-06 23:46:56,746 INFO open empty service auto clean job, initialDelay : 50000 ms, period : 30000 ms
+
+2024-06-06 23:46:56,747 INFO listen for service meta change
+
+2024-06-06 23:46:59,101 INFO [SelectorManager] Load SelectorContextBuilder(class com.alibaba.nacos.naming.selector.context.CmdbSelectorContextBuilder) contextType(CMDB) successfully.
+
+2024-06-06 23:46:59,101 INFO [SelectorManager] Load SelectorContextBuilder(class com.alibaba.nacos.naming.selector.context.NoneSelectorContextBuilder) contextType(NONE) successfully.
+
+2024-06-06 23:46:59,102 INFO [SelectorManager] Load Selector(class com.alibaba.nacos.naming.selector.LabelSelector) type(label) contextType(CMDB) successfully.
+
+2024-06-06 23:46:59,102 INFO [SelectorManager] Load Selector(class com.alibaba.nacos.naming.selector.NoneSelector) type(none) contextType(NONE) successfully.
+
+2024-06-06 23:47:00,044 INFO Load instance extension handler []
+
+2024-06-06 23:47:12,150 INFO Client connection 1717688832018_192.168.141.1_2527 connect
+
+2024-06-06 23:47:12,273 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=0}, 1717688832018_192.168.141.1_2527
+
+2024-06-06 23:47:18,765 INFO Client connection 1717688838686_192.168.141.1_2536 connect
+
+2024-06-06 23:47:18,897 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-project', ephemeral=true, revision=0}, 1717688838686_192.168.141.1_2536
+
+2024-06-06 23:49:27,562 INFO Client connection 1717688832018_192.168.141.1_2527 disconnect, remove instances and subscribers
+
+2024-06-06 23:49:30,128 INFO Client connection 1717688970122_192.168.141.1_2698 connect
+
+2024-06-06 23:49:33,101 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=2}, 1717688970122_192.168.141.1_2698
+
+2024-06-06 23:54:10,841 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=3}, 1717688970122_192.168.141.1_2698
+
+2024-06-06 23:54:10,852 INFO Client connection 1717688970122_192.168.141.1_2698 disconnect, remove instances and subscribers
+
+2024-06-06 23:54:57,793 INFO Client connection 1717689297717_192.168.141.1_3009 connect
+
+2024-06-06 23:54:57,920 INFO Client change for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=4}, 1717689297717_192.168.141.1_3009
+
+2024-06-06 23:57:20,796 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-admin', ephemeral=true, revision=5}, 1717689297717_192.168.141.1_3009
+
+2024-06-06 23:57:20,805 INFO Client connection 1717689297717_192.168.141.1_3009 disconnect, remove instances and subscribers
+
+2024-06-06 23:57:20,809 INFO Client remove for service Service{namespace='public', group='DEFAULT_GROUP', name='short-link-project', ephemeral=true, revision=1}, 1717688838686_192.168.141.1_2536
+
+2024-06-06 23:57:20,818 INFO Client connection 1717688838686_192.168.141.1_2536 disconnect, remove instances and subscribers
+
+2024-06-06 23:58:29,793 WARN namespace : public, [DEFAULT_GROUP@@short-link-project] services are automatically cleaned
+
+2024-06-06 23:58:29,793 WARN namespace : public, [DEFAULT_GROUP@@short-link-admin] services are automatically cleaned
+
