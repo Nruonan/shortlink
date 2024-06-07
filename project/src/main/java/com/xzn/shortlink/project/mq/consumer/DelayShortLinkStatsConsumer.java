@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @description 延迟记录短链接统计组件
  */
 @Component
+@Deprecated
 @RequiredArgsConstructor
 public class DelayShortLinkStatsConsumer implements InitializingBean {
     private final RedissonClient redissonClient;
