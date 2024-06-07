@@ -44,7 +44,10 @@ public class ShortLinkPageRespDTO {
      * 网站标识
      */
     private String favicon;
-
+    /**
+     * 启用标识 0：启用 1：未启用
+     */
+    private Integer enableStatus;
     /**
      * 有效期类型 0：永久有效 1：用户自定义
      */

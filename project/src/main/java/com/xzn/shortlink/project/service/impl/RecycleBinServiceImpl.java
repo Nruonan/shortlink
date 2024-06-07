@@ -5,7 +5,6 @@ import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_IS
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.GOTO_SHORT_LINK_KEY;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -54,13 +53,7 @@ public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLin
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkRecycleBinPageReqDTO requestParam) {
         // 查询分页
-        LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-            .in(ShortLinkDO::getGid,requestParam.getGidList())
-            .eq(ShortLinkDO::getEnableStatus, 1)
-            .eq(ShortLinkDO::getDelFlag, 0)
-            .orderByDesc(ShortLinkDO::getCreateTime);
-        // 生成分页
-        IPage<ShortLinkDO> resultPage = baseMapper.selectPage(requestParam, queryWrapper);
+        IPage<ShortLinkDO> resultPage = baseMapper.pageRecycleBinLink(requestParam);
         // 封装分页
         return resultPage.convert(
             each -> {

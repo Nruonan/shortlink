@@ -28,10 +28,6 @@ public class LinkNetworkStatsDO extends BaseDO {
      */
     private String fullShortUrl;
 
-    /**
-     * 分组标识
-     */
-    private String gid;
 
     /**
      * 日期

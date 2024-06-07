@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xzn.shortlink.project.dao.entity.LinkAccessLogsDO;
 import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkDeviceStatsDO;
 import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
+import com.xzn.shortlink.project.dao.entity.LinkNetworkStatsDO;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessLogsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
 import com.xzn.shortlink.project.dao.mapper.LinkBrowserStatsMapper;
@@ -227,16 +229,16 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
 
         // 访问设备类型详情
         List<ShortLinkStatsDeviceRespDTO> deviceStats = new ArrayList<>();
-        List<HashMap<String, Object>>listDeviceStatsByShortLink = linkDeviceStatsMapper.listDeviceStatsByShortLink(requestParam);
+        List<LinkDeviceStatsDO> listDeviceStatsByShortLink = linkDeviceStatsMapper.listDeviceStatsByShortLink(requestParam);
         int deviceSum = listDeviceStatsByShortLink.stream()
-            .mapToInt(each -> Integer.parseInt(each.get("count").toString()))
+            .mapToInt(LinkDeviceStatsDO::getCnt)
             .sum();
         listDeviceStatsByShortLink.forEach(each -> {
-            double ratio = (double) Integer.parseInt(each.get("count").toString())/ deviceSum;
+            double ratio = (double) each.getCnt() / deviceSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
             ShortLinkStatsDeviceRespDTO deviceRespDTO = ShortLinkStatsDeviceRespDTO.builder()
-                .cnt(Integer.valueOf(each.get("count").toString()))
-                .device(each.get("device").toString())
+                .cnt(each.getCnt())
+                .device(each.getDevice())
                 .ratio(actualRatio)
                 .build();
             deviceStats.add(deviceRespDTO);
@@ -244,16 +246,16 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
 
         // 访问网络类型详情
         List<ShortLinkStatsNetworkRespDTO> networkStats = new ArrayList<>();
-        List<HashMap<String, Object>> listNetworkStatsByShortLink = linkNetworkStatsMapper.listNetworkStatsByShortLink(requestParam);
+        List<LinkNetworkStatsDO> listNetworkStatsByShortLink = linkNetworkStatsMapper.listNetworkStatsByShortLink(requestParam);
         int networkSum = listNetworkStatsByShortLink.stream()
-            .mapToInt(each -> Integer.parseInt(each.get("count").toString()))
+            .mapToInt(LinkNetworkStatsDO::getCnt)
             .sum();
         listNetworkStatsByShortLink.forEach(each -> {
-            double ratio = (double) Integer.parseInt(each.get("count").toString()) / networkSum;
+            double ratio = (double) each.getCnt() / networkSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
             ShortLinkStatsNetworkRespDTO networkRespDTO = ShortLinkStatsNetworkRespDTO.builder()
-                .cnt(Integer.parseInt(each.get("count").toString()))
-                .network(each.get("network").toString())
+                .cnt(each.getCnt())
+                .network(each.getNetwork())
                 .ratio(actualRatio)
                 .build();
             networkStats.add(networkRespDTO);
@@ -277,7 +279,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
 
     @Override
     public ShortLinkStatsRespDTO groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam) {
-        List<LinkAccessStatsDO> listStatsByGroup = linkAccessStatsMapper.ListStatsByGroup(requestParam);
+        List<LinkAccessStatsDO> listStatsByGroup = linkAccessStatsMapper.listStatsByGroup(requestParam);
         if(CollUtil.isEmpty(listStatsByGroup)){
             return null;
         }
@@ -406,51 +408,18 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
             osStats.add(statsOsRespDTO);
         });
 
-        // 访客访问类型详情
-        List<ShortLinkStatsUvRespDTO> uvTypeStats = new ArrayList<>();
-        HashMap<String, Object> findUvTypeByGroup = linkAccessLogsMapper.findUvTypeCntByGroup(requestParam);
-        int oldUserCnt = Integer.parseInt(
-            Optional.ofNullable(findUvTypeByGroup)
-                .map(each -> each.get("oldUserCnt"))
-                .map(Object::toString)
-                .orElse("0")
-        );
-        int newUserCnt = Integer.parseInt(
-            Optional.ofNullable(findUvTypeByGroup)
-                .map(each -> each.get("newUserCnt"))
-                .map(Object::toString)
-                .orElse("0")
-        );
-        int uvSum = oldUserCnt + newUserCnt;
-        double oldRatio = (double) oldUserCnt / uvSum;
-        double actualOldRatio = Math.round(oldRatio * 100.0) / 100.0;
-        double newRatio = (double) newUserCnt / uvSum;
-        double actualNewRatio = Math.round(newRatio * 100.0) / 100.0;
-        ShortLinkStatsUvRespDTO newUser = ShortLinkStatsUvRespDTO.builder()
-            .ratio(actualNewRatio)
-            .cnt(newUserCnt)
-            .uvType("newUser")
-            .build();
-        uvTypeStats.add(newUser);
-        ShortLinkStatsUvRespDTO oldUser = ShortLinkStatsUvRespDTO.builder()
-            .ratio(actualOldRatio)
-            .cnt(oldUserCnt)
-            .uvType("oldUser")
-            .build();
-        uvTypeStats.add(oldUser);
-
         // 访问设备类型详情
         List<ShortLinkStatsDeviceRespDTO> deviceStats = new ArrayList<>();
-        List<HashMap<String, Object>>listDeviceStatsByGroup = linkDeviceStatsMapper.listDeviceStatsByGroup(requestParam);
+        List<LinkDeviceStatsDO>listDeviceStatsByGroup = linkDeviceStatsMapper.listDeviceStatsByGroup(requestParam);
         int deviceSum = listDeviceStatsByGroup.stream()
-            .mapToInt(each -> Integer.parseInt(each.get("count").toString()))
+            .mapToInt(LinkDeviceStatsDO::getCnt)
             .sum();
         listDeviceStatsByGroup.forEach(each -> {
-            double ratio = (double) Integer.parseInt(each.get("count").toString())/ deviceSum;
+            double ratio = (double) each.getCnt()/ deviceSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
             ShortLinkStatsDeviceRespDTO deviceRespDTO = ShortLinkStatsDeviceRespDTO.builder()
-                .cnt(Integer.valueOf(each.get("count").toString()))
-                .device(each.get("device").toString())
+                .cnt(each.getCnt())
+                .device(each.getDevice())
                 .ratio(actualRatio)
                 .build();
             deviceStats.add(deviceRespDTO);
@@ -458,16 +427,16 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
 
         // 访问网络类型详情
         List<ShortLinkStatsNetworkRespDTO> networkStats = new ArrayList<>();
-        List<HashMap<String, Object>> listNetworkStatsByGroup = linkNetworkStatsMapper.listNetworkStatsByGroup(requestParam);
+        List<LinkNetworkStatsDO> listNetworkStatsByGroup = linkNetworkStatsMapper.listNetworkStatsByGroup(requestParam);
         int networkSum = listNetworkStatsByGroup.stream()
-            .mapToInt(each -> Integer.parseInt(each.get("count").toString()))
+            .mapToInt(LinkNetworkStatsDO::getCnt)
             .sum();
         listNetworkStatsByGroup.forEach(each -> {
-            double ratio = (double) Integer.parseInt(each.get("count").toString()) / networkSum;
+            double ratio = (double) each.getCnt() / networkSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
             ShortLinkStatsNetworkRespDTO networkRespDTO = ShortLinkStatsNetworkRespDTO.builder()
-                .cnt(Integer.parseInt(each.get("count").toString()))
-                .network(each.get("network").toString())
+                .cnt(each.getCnt())
+                .network(each.getNetwork())
                 .ratio(actualRatio)
                 .build();
             networkStats.add(networkRespDTO);
@@ -483,7 +452,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
             .localeCnStats(localeCnStats)
             .topIpStats(topIpStats)
             .networkStats(networkStats)
-            .uvTypeStats(uvTypeStats)
             .weekdayStats(weekdayStats)
             .browserStats(browserStats)
             .build();
@@ -502,7 +470,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         Date startDate = format.parse(startDateStr);
         Date endDate = format.parse(endDateStr);
         LambdaQueryWrapper<LinkAccessLogsDO> queryWrapper = Wrappers.lambdaQuery(LinkAccessLogsDO.class)
-            .eq(LinkAccessLogsDO::getGid, requestParam.getGid())
             .between(LinkAccessLogsDO::getCreateTime, startDate, endDate)
             .eq(LinkAccessLogsDO::getFullShortUrl, requestParam.getFullShortUrl())
             .eq(LinkAccessLogsDO::getDelFlag, 0)
@@ -517,7 +484,8 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         List<Map<String, Object>> uvTypeList = linkAccessLogsMapper.selectUvTypeByUsers(
             requestParam.getGid(),
             requestParam.getFullShortUrl(),
-            requestParam.getStartDate() ,
+            requestParam.getEnableStatus() ,
+            requestParam.getStartDate(),
             requestParam.getEndDate() ,
             userAccessLogsList
         );
@@ -538,21 +506,8 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
     @Override
     public IPage<ShortLinkStatsAccessRecordRespDTO> groupShortLinkStatsAccessRecord(
         ShortLinkGroupStatsAccessRecordReqDTO requestParam) {
-        // 查询短链接
-        String startDateStr = requestParam.getStartDate() + " 00:00:00";;
-        String endDateStr = requestParam.getEndDate() + " 23:59:59";
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 这个格式应该与你的日期字符串的格式相同
-        format.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        Date startDate = format.parse(startDateStr);
-        Date endDate = format.parse(endDateStr);
-        LambdaQueryWrapper<LinkAccessLogsDO> queryWrapper = Wrappers.lambdaQuery(LinkAccessLogsDO.class)
-            .eq(LinkAccessLogsDO::getGid, requestParam.getGid())
-            .between(LinkAccessLogsDO::getCreateTime, startDate, endDate)
-            .eq(LinkAccessLogsDO::getDelFlag, 0)
-            .orderByDesc(LinkAccessLogsDO::getCreateTime);
         // 分页
-        IPage<LinkAccessLogsDO> linkAccessLogsDOIPage = linkAccessLogsMapper.selectPage(requestParam, queryWrapper);
+        IPage<LinkAccessLogsDO> linkAccessLogsDOIPage = linkAccessLogsMapper.selectGroupPage(requestParam);
         IPage<ShortLinkStatsAccessRecordRespDTO> actualResult = linkAccessLogsDOIPage.convert(each -> BeanUtil.toBean(each, ShortLinkStatsAccessRecordRespDTO.class));
         List<String> userAccessLogsList = actualResult.getRecords().stream()
             .map(ShortLinkStatsAccessRecordRespDTO::getUser)

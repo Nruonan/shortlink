@@ -141,7 +141,6 @@ public class ShortLinkStatsSaveConsumer{
                 .hour(hour)
                 .fullShortUrl(fullShortUrl)
                 .weekday(weekValue)
-                .gid(gid)
                 .date(new Date())
                 .build();
             linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
@@ -171,31 +170,28 @@ public class ShortLinkStatsSaveConsumer{
                     .country("中国")
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
-                    .gid(gid)
                     .date(new Date())
                     .build();
                 // 插入国家地区数据
-                linkLocaleStatsMapper.shortLinkLocaleStats(linkLocaleStatsDO);
+                linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
 
                 // 插入操作系统数据
                 LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
                     .os(statsRecord.getOs())
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
-                    .gid(gid)
                     .date(new Date())
                     .build();
-                linkOsStatsMapper.shortLinkOsStats(linkOsStatsDO);
+                linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
 
                 // 插入浏览器数据
                 LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
                     .browser(statsRecord.getBrowser())
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
-                    .gid(gid)
                     .date(new Date())
                     .build();
-                linkBrowserStatsMapper.shortLinkBrowserStats(linkBrowserStatsDO);
+                linkBrowserStatsMapper.shortLinkBrowserState(linkBrowserStatsDO);
 
 
                 // 插入设备数据
@@ -203,20 +199,18 @@ public class ShortLinkStatsSaveConsumer{
                     .device(statsRecord.getDevice())
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
-                    .gid(gid)
                     .date(new Date())
                     .build();
-                linkDeviceStatsMapper.shortLinkDeviceStats(linkDeviceStatsDO);
+                linkDeviceStatsMapper.shortLinkDeviceState(linkDeviceStatsDO);
 
                 // 插入网络数据
                 LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
                     .network(statsRecord.getNetwork())
                     .cnt(1)
                     .fullShortUrl(fullShortUrl)
-                    .gid(gid)
                     .date(new Date())
                     .build();
-                linkNetworkStatsMapper.shortLinkNetworkStats(linkNetworkStatsDO);
+                linkNetworkStatsMapper.shortLinkNetworkState(linkNetworkStatsDO);
 
                 // 插入监控日志
                 LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
@@ -228,14 +222,12 @@ public class ShortLinkStatsSaveConsumer{
                     .device(statsRecord.getDevice())
                     .locale(StrUtil.join("-","中国" , actualProvince , actualCity))
                     .fullShortUrl(fullShortUrl)
-                    .gid(gid)
                     .build();
                 linkAccessLogsMapper.insert(linkAccessLogsDO);
                 // 添加总计uv等数据到shortLink
                 shortLinkMapper.incrementStats(gid,fullShortUrl,1,statsRecord.getUvFirstFlag() ? 1: 0,statsRecord.getUipFirstFlag() ? 1 : 0);
                 // 添加单日uv等数据到shortLink_today
                 LinkStatsTodayDO linkStatsTodayDO = LinkStatsTodayDO.builder()
-                    .gid(gid)
                     .fullShortUrl(fullShortUrl)
                     .todayPv(1)
                     .todayUv(statsRecord.getUvFirstFlag() ? 1 : 0)

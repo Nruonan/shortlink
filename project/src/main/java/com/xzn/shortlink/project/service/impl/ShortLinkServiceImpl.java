@@ -9,7 +9,6 @@ import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_L
 import static com.xzn.shortlink.project.common.constant.RedisConstantKey.SHORT_LINK_STATS_UV_KEY;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.ArrayUtil;
@@ -25,28 +24,11 @@ import com.xzn.shortlink.project.common.convention.exception.ClientException;
 import com.xzn.shortlink.project.common.convention.exception.ServiceException;
 import com.xzn.shortlink.project.common.enums.VailDateTypeEnum;
 import com.xzn.shortlink.project.config.GotoDomainWhiteListConfiguration;
-import com.xzn.shortlink.project.dao.entity.LinkAccessLogsDO;
-import com.xzn.shortlink.project.dao.entity.LinkAccessStatsDO;
-import com.xzn.shortlink.project.dao.entity.LinkBrowserStatsDO;
-import com.xzn.shortlink.project.dao.entity.LinkDeviceStatsDO;
-import com.xzn.shortlink.project.dao.entity.LinkLocaleStatsDO;
-import com.xzn.shortlink.project.dao.entity.LinkNetworkStatsDO;
-import com.xzn.shortlink.project.dao.entity.LinkOsStatsDO;
-import com.xzn.shortlink.project.dao.entity.LinkStatsTodayDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkDO;
 import com.xzn.shortlink.project.dao.entity.ShortLinkGotoDO;
-import com.xzn.shortlink.project.dao.mapper.LinkAccessLogsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkAccessStatsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkBrowserStatsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkDeviceStatsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkNetworkStatsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkOsStatsMapper;
-import com.xzn.shortlink.project.dao.mapper.LinkStatsTodayMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.xzn.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.xzn.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
-import com.xzn.shortlink.project.mq.idempotent.ShortLinkStatsRecordListenerDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.xzn.shortlink.project.dto.req.ShortLinkPageReqDTO;
@@ -56,6 +38,7 @@ import com.xzn.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkGroupQueryRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkPageRespDTO;
+import com.xzn.shortlink.project.mq.idempotent.ShortLinkStatsRecordListenerDTO;
 import com.xzn.shortlink.project.mq.producer.ShortLinkStatsSaveProducer;
 import com.xzn.shortlink.project.service.LinkStatsTodayService;
 import com.xzn.shortlink.project.service.ShortLinkService;
@@ -108,14 +91,6 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final ShortLinkGotoMapper shortLinkGotoMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final RedissonClient redissonClient;
-    private final LinkAccessStatsMapper linkAccessStatsMapper;
-    private final LinkLocaleStatsMapper linkLocaleStatsMapper;
-    private final LinkOsStatsMapper linkOsStatsMapper;
-    private final LinkBrowserStatsMapper linkBrowserStatsMapper;
-    private final LinkAccessLogsMapper linkAccessLogsMapper;
-    private final LinkDeviceStatsMapper linkDeviceStatsMapper;
-    private final LinkNetworkStatsMapper linkNetworkStatsMapper;
-    private final LinkStatsTodayMapper linkStatsTodayMapper;
     private final LinkStatsTodayService linkStatsTodayService;
     private final GotoDomainWhiteListConfiguration gotoDomainWhiteListConfiguration;
     private final ShortLinkStatsSaveProducer shortLinkStatsSaveProducer;
@@ -343,93 +318,14 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .delTime(0L)
                     .build();
                 baseMapper.insert(shortLinkDO);
-                // 查stats_today表，替换新的数据
-                LambdaQueryWrapper<LinkStatsTodayDO> statsTodayQueryWrapper = Wrappers.lambdaQuery(LinkStatsTodayDO.class)
-                    .eq(LinkStatsTodayDO::getFullShortUrl,requestParam.getFullShortUrl())
-                    .eq(LinkStatsTodayDO::getGid,hasShortLinkDO.getGid())
-                    .eq(LinkStatsTodayDO::getDelFlag,0);
-                List<LinkStatsTodayDO> linkStatsTodayDOList = linkStatsTodayMapper.selectList(statsTodayQueryWrapper);
-                if (CollUtil.isNotEmpty(linkStatsTodayDOList)){
-                    // 删除旧数据
-                    linkStatsTodayMapper.deleteBatchIds(linkStatsTodayDOList.stream()
-                        .map(LinkStatsTodayDO::getId)
-                        .toList()
-                    );
-                    // 更换分组重新保存
-                    linkStatsTodayDOList.forEach(each -> each.setGid(requestParam.getGid()));
-                    linkStatsTodayService.saveBatch(linkStatsTodayDOList);
-                }
                 // 先删goto表中的gid和完整短连接数据
                 LambdaQueryWrapper<ShortLinkGotoDO> linkGotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                     .eq(ShortLinkGotoDO::getFullShortUrl, hasShortLinkDO.getFullShortUrl())
                     .eq(ShortLinkGotoDO::getGid, hasShortLinkDO.getGid());
                 ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(linkGotoQueryWrapper);
-                shortLinkGotoMapper.deleteById(shortLinkGotoDO.getId());
+                shortLinkGotoMapper.delete(linkGotoQueryWrapper);
                 shortLinkGotoDO.setGid(requestParam.getGid());
                 shortLinkGotoMapper.insert(shortLinkGotoDO);
-                // 修改access_Stat表
-                LambdaUpdateWrapper<LinkAccessStatsDO> linkAccessStatsUpdateWrapper = Wrappers.lambdaUpdate(LinkAccessStatsDO.class)
-                    .eq(LinkAccessStatsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkAccessStatsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkAccessStatsDO::getDelFlag, 0);
-                LinkAccessStatsDO linkAccessStatsDO = LinkAccessStatsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkAccessStatsMapper.update(linkAccessStatsDO, linkAccessStatsUpdateWrapper);
-                // 修改locale_Stat表
-                LambdaUpdateWrapper<LinkLocaleStatsDO> linkLocaleStatsUpdateWrapper = Wrappers.lambdaUpdate(LinkLocaleStatsDO.class)
-                    .eq(LinkLocaleStatsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkLocaleStatsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkLocaleStatsDO::getDelFlag, 0);
-                LinkLocaleStatsDO linkLocaleStatsDO = LinkLocaleStatsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkLocaleStatsMapper.update(linkLocaleStatsDO, linkLocaleStatsUpdateWrapper);
-                // 修改os_Stat表
-                LambdaUpdateWrapper<LinkOsStatsDO> linkOsStatsUpdateWrapper = Wrappers.lambdaUpdate(LinkOsStatsDO.class)
-                    .eq(LinkOsStatsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkOsStatsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkOsStatsDO::getDelFlag, 0);
-                LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkOsStatsMapper.update(linkOsStatsDO, linkOsStatsUpdateWrapper);
-                // 修改browser_Stat表
-                LambdaUpdateWrapper<LinkBrowserStatsDO> linkBrowserStatsUpdateWrapper = Wrappers.lambdaUpdate(LinkBrowserStatsDO.class)
-                    .eq(LinkBrowserStatsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkBrowserStatsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkBrowserStatsDO::getDelFlag, 0);
-                LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkBrowserStatsMapper.update(linkBrowserStatsDO, linkBrowserStatsUpdateWrapper);
-                // 修改device_Stat表
-                LambdaUpdateWrapper<LinkDeviceStatsDO> linkDeviceStatsUpdateWrapper = Wrappers.lambdaUpdate(LinkDeviceStatsDO.class)
-                    .eq(LinkDeviceStatsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkDeviceStatsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkDeviceStatsDO::getDelFlag, 0);
-                LinkDeviceStatsDO linkDeviceStatsDO = LinkDeviceStatsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkDeviceStatsMapper.update(linkDeviceStatsDO, linkDeviceStatsUpdateWrapper);
-                // 修改network_Stat表
-                LambdaUpdateWrapper<LinkNetworkStatsDO> linkNetworkStatsUpdateWrapper = Wrappers.lambdaUpdate(LinkNetworkStatsDO.class)
-                    .eq(LinkNetworkStatsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkNetworkStatsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkNetworkStatsDO::getDelFlag, 0);
-                LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkNetworkStatsMapper.update(linkNetworkStatsDO, linkNetworkStatsUpdateWrapper);
-                // 修改access_log表
-                LambdaUpdateWrapper<LinkAccessLogsDO> linkAccessLogsUpdateWrapper = Wrappers.lambdaUpdate(LinkAccessLogsDO.class)
-                    .eq(LinkAccessLogsDO::getFullShortUrl, requestParam.getFullShortUrl())
-                    .eq(LinkAccessLogsDO::getGid, hasShortLinkDO.getGid())
-                    .eq(LinkAccessLogsDO::getDelFlag, 0);
-                LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
-                    .gid(requestParam.getGid())
-                    .build();
-                linkAccessLogsMapper.update(linkAccessLogsDO, linkAccessLogsUpdateWrapper);
             } finally {
                 rLock.unlock();
             }
@@ -440,7 +336,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
         // 判断时间是否有效
         if (hasShortLinkDO.getValidDate() != null && requestParam.getValidDate().after(new Date())) {
-            if (Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(new Date())){
+            if (Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
+                || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
+                || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())
+                ){
                 //布隆过滤器添加新短链接
                 shortUriCachePenetrationBloomFilter.add(requestParam.getFullShortUrl());
                 // 设置redis过期有效期
@@ -682,7 +581,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
         return shortUri;
     }
-    private void verificationWhitelist(String originUrl) {
+
+    public void verificationWhitelist(String originUrl) {
         Boolean enable = gotoDomainWhiteListConfiguration.getEnable();
         if (enable == null || !enable){
             throw new ClientException("跳转链接填写错误");
