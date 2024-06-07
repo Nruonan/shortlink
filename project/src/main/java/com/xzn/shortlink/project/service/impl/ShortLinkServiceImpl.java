@@ -40,7 +40,6 @@ import com.xzn.shortlink.project.dto.resp.ShortLinkGroupQueryRespDTO;
 import com.xzn.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.xzn.shortlink.project.mq.idempotent.ShortLinkStatsRecordListenerDTO;
 import com.xzn.shortlink.project.mq.producer.ShortLinkStatsSaveProducer;
-import com.xzn.shortlink.project.service.LinkStatsTodayService;
 import com.xzn.shortlink.project.service.ShortLinkService;
 import com.xzn.shortlink.project.util.HashUtil;
 import com.xzn.shortlink.project.util.LinkUtil;
@@ -87,11 +86,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLinkDO>implements ShortLinkService {
 
     private final RBloomFilter<String> shortUriCachePenetrationBloomFilter;
-    private final ShortLinkMapper shortLinkMapper;
     private final ShortLinkGotoMapper shortLinkGotoMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final RedissonClient redissonClient;
-    private final LinkStatsTodayService linkStatsTodayService;
     private final GotoDomainWhiteListConfiguration gotoDomainWhiteListConfiguration;
     private final ShortLinkStatsSaveProducer shortLinkStatsSaveProducer;
 
@@ -331,24 +328,22 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
 
         }
-        // 先删除原来短连接的缓存 防止访问错误网址
-        stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
 
         // 判断时间是否有效
-        if (hasShortLinkDO.getValidDate() != null && requestParam.getValidDate().after(new Date())) {
-            if (Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
+            if (!Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
                 || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
                 || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())
                 ){
-                //布隆过滤器添加新短链接
-                shortUriCachePenetrationBloomFilter.add(requestParam.getFullShortUrl());
-                // 设置redis过期有效期
-                stringRedisTemplate.opsForValue()
-                    .set(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()),
-                        requestParam.getOriginUrl(),
-                        LinkUtil.getLinkCacheValidDate(requestParam.getValidDate()),TimeUnit.MILLISECONDS);
+                // 先删除原来短连接的缓存 防止访问错误网址
+                stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
+                Date currentDate = new Date();
+                if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(currentDate)) {
+                    if (Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(currentDate)) {
+                        stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
+                    }
+                }
             }
-        }
+
     }
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
