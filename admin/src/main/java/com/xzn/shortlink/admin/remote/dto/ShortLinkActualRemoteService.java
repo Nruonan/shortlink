@@ -2,6 +2,7 @@ package com.xzn.shortlink.admin.remote.dto;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzn.shortlink.admin.common.convention.result.Result;
+import com.xzn.shortlink.admin.config.OpenFeignConfiguration;
 import com.xzn.shortlink.admin.dto.req.ShortLinkBatchCreateReqDTO;
 import com.xzn.shortlink.admin.dto.resp.ShortLinkBatchCreateRespDTO;
 import com.xzn.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
@@ -24,7 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * 短链接中台远程调用服务
  */
-@FeignClient("short-link-project")
+@FeignClient(
+    value = "short-link-project",
+    url = "${aggregation.remote-url:}",
+    configuration = OpenFeignConfiguration.class
+)
 public interface ShortLinkActualRemoteService {
 
     /**

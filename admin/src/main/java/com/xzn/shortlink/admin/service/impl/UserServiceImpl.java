@@ -37,6 +37,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Nruonan
@@ -46,7 +47,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements UserService {
 
-    private final RBloomFilter<String> rBloomFilter;
+    private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
 
     private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
@@ -71,9 +72,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 //            .eq(UserDo::getUsername, username);
 //        UserDo userDo = baseMapper.selectOne(queryWrapper);
 //        return userDo != null;
-        return !rBloomFilter.contains(username);
+        return !userRegisterCachePenetrationBloomFilter.contains(username);
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void register(UserRegisterReqDTO requestParam) {
         if(!hasUsername(requestParam.getUsername())){
@@ -88,8 +89,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
             if(insert < 1){
                 throw new ClientException(USER_SAVE_ERROR);
             }
-            rBloomFilter.add(requestParam.getUsername());
             groupService.saveGroup(requestParam.getUsername(),"默认分组");
+            userRegisterCachePenetrationBloomFilter.add(requestParam.getUsername());
         }catch (DuplicateKeyException ex){
             throw new ClientException(USER_EXIST);
         } finally {
