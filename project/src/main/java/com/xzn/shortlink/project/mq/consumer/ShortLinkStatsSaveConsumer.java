@@ -107,11 +107,13 @@ public class ShortLinkStatsSaveConsumer{
             }
         } catch (Throwable ex) {
             log.error("记录短链接监控消费异常", ex);
-            throw ex;
+            try {
+                messageQueueIdempotentHandler.delMessageProcessed(keys);
+            } catch (Throwable remoteEx) {
+                log.error("删除幂等标识错误", remoteEx);
+            }
         }
         messageQueueIdempotentHandler.setAccomplish(keys);
-
-
     }
 
     private void actualSaveShortLinkStats(String gid, String fullShortUrl, ShortLinkStatsRecordDTO statsRecord) {
