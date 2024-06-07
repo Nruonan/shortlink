@@ -164,6 +164,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             baseMapper.insert(shortLinkDO);
             shortLinkGotoMapper.insert(shortLinkGoto);
         }catch (DuplicateKeyException ex){
+            // 首先判断是否存在布隆过滤器，如果不存在直接新增
+            if (!shortUriCachePenetrationBloomFilter.contains(fullShortUrl)) {
+                shortUriCachePenetrationBloomFilter.add(fullShortUrl);
+            }
             throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
         }
         //布隆过滤器添加该短链接
@@ -180,6 +184,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             .build();
     }
 
+    @Override
+    public ShortLinkCreateRespDTO createShortLinkByLock(ShortLinkCreateReqDTO requestParam) {
+        return null;
+    }
 
     @Override
     public ShortLinkBatchCreateRespDTO batchCreateShortLink(ShortLinkBatchCreateReqDTO requestParam) {

@@ -35,5 +35,10 @@ public final class RedisConstantKey {
      * 短链接统计判断是否新 IP 缓存标识
      */
     public static final String SHORT_LINK_STATS_UIP_KEY = "short-link:stats:uip:";
+
+    /**
+     * 创建短链接锁标识
+     */
+    public static final String SHORT_LINK_CREATE_LOCK_KEY = "short-link:lock:create";
 }
 

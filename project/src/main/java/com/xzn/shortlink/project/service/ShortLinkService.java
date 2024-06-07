@@ -42,4 +42,6 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      * @param shortLinkStatsRecord 短链接统计实体参数
      */
     void shortLinkStats(String fullShortUrl, String gid, ShortLinkStatsRecordDTO shortLinkStatsRecord);
+
+    ShortLinkCreateRespDTO createShortLinkByLock(ShortLinkCreateReqDTO requestParam);
 }
