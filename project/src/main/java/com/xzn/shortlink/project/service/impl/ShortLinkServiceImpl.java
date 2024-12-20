@@ -70,6 +70,7 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -91,7 +92,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final RedissonClient redissonClient;
     private final GotoDomainWhiteListConfiguration gotoDomainWhiteListConfiguration;
     private final ShortLinkStatsSaveProducer shortLinkStatsSaveProducer;
-
+    private final RabbitTemplate rabbitTemplate;
 
     @Value("${short-link.domain.default}")
     private String createShortLinkDefaultDomain;
@@ -329,13 +330,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
         }
 
-        // 判断时间是否有效
+            // 判断时间是否有效
             if (!Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
                 || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
                 || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())
                 ){
                 // 先删除原来短连接的缓存 防止访问错误网址
                 stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
+                rabbitTemplate.convertAndSend("short-link_project-normal.exchange", "short-link_project-normal.key", String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()), correlationData->{
+                    correlationData.getMessageProperties().setExpiration("3000");
+                    return correlationData;
+                });
                 Date currentDate = new Date();
                 if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(currentDate)) {
                     if (Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(currentDate)) {
