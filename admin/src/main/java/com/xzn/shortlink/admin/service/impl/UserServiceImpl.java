@@ -55,6 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
+        // 根据名字查询用户
         LambdaQueryWrapper<UserDo> queryWrapper = Wrappers.lambdaQuery(UserDo.class)
             .eq(UserDo::getUsername, username);
         UserDo userDo = baseMapper.selectOne(queryWrapper);
@@ -77,19 +78,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void register(UserRegisterReqDTO requestParam) {
+        // 1 判断布隆过滤器是否存在这名字哦
         if(!hasUsername(requestParam.getUsername())){
             throw new ClientException(USER_NAME_EXIST);
         }
+        // 上锁
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUsername());
         if(!lock.tryLock()) {
             throw new ClientException(USER_NAME_EXIST);
         }
         try{
+            // 添加进数据库
             int insert = baseMapper.insert(BeanUtil.toBean(requestParam, UserDo.class));
             if(insert < 1){
                 throw new ClientException(USER_SAVE_ERROR);
             }
+            // 创建分组
             groupService.saveGroup(requestParam.getUsername(),"默认分组");
+            // 布隆过滤器添加姓名
             userRegisterCachePenetrationBloomFilter.add(requestParam.getUsername());
         }catch (DuplicateKeyException ex){
             throw new ClientException(USER_EXIST);
@@ -100,6 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 
     @Override
     public void update(UserUpdateReqDTO requestParam) {
+        // 判断登录用户是否和当前用户一样
         if (!Objects.equals(requestParam.getUsername(), UserContext.getUsername())) {
             throw new ClientException("当前登录用户修改请求异常");
         }
@@ -110,6 +117,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) throws ServiceException {
+        // 查询 判断del_flag是否删除
         LambdaQueryWrapper<UserDo> queryWrapper = Wrappers.lambdaQuery(UserDo.class)
             .eq(UserDo::getUsername, requestParam.getUsername())
             .eq(UserDo::getPassword, requestParam.getPassword())
@@ -128,7 +136,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
                 .orElseThrow(() -> new ClientException("用户登录错误"));
             return new UserLoginRespDTO(token);
         }
-
+        // 创建uuid存入redis
         String uuid = UUID.randomUUID().toString();
         stringRedisTemplate.opsForHash().put("login_"+requestParam.getUsername(),uuid, JSON.toJSONString(requestParam));
         stringRedisTemplate.expire("login_"+requestParam.getUsername(), 30, TimeUnit.MINUTES);
@@ -142,7 +150,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
 
     @Override
     public void logout(String token, String username) {
+        // 先判断是否登录上
         if(checkLogin(token,username)){
+            // 删除redis
             stringRedisTemplate.delete("login_"+username);
             return;
         }

@@ -45,9 +45,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDo> implements GroupService {
-    /**
-     * 后续重构为 springcloud
-     */
+
     @Value("${short-link.group.max-num}")
     private Integer groupMaxNum;
     private final RedissonClient redissonClient;

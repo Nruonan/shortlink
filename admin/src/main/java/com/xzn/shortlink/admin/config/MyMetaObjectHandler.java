@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import java.util.Date;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
-
+/**
+ * BaseDO的生成方式
+ */
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
 

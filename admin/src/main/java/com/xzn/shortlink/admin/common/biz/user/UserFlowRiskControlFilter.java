@@ -38,17 +38,21 @@ public class UserFlowRiskControlFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        // 加载位于类路径下的Lua限流脚本文件作为Redis脚本源
         redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(USER_FLOW_RISK_CONTROL_LUA_SCRIPT_PATH)));
         redisScript.setResultType(Long.class);
+        // 获取用户名
         String username = Optional.ofNullable(UserContext.getUsername()).orElse("other");
         Long result = null;
         try {
+            // 执行lua脚本
             result = stringRedisTemplate.execute(redisScript, Lists.newArrayList(username), userFlowRiskControlConfiguration.getTimeWindow());
         } catch (Throwable ex) {
             log.error("执行用户请求流量限制LUA脚本出错", ex);
             returnJson((HttpServletResponse) response, JSON.toJSONString(Results.failure(new ClientException(FLOW_LIMIT_ERROR))));
             return;
         }
+        // 若大于访问次数限制，则返回错误信息
         if (result == null || result > userFlowRiskControlConfiguration.getMaxAccessCount()) {
             returnJson((HttpServletResponse) response, JSON.toJSONString(Results.failure(new ClientException(FLOW_LIMIT_ERROR))));
         }

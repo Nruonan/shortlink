@@ -16,7 +16,7 @@ public class UserConfiguration implements WebMvcConfigurer {
     private final UserTransmitInterceptor userTransmitInterceptor;
 
     /**
-     * 用户信息传递过滤器
+     * 添加用户信息传递过滤器
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

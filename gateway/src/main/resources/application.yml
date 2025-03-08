@@ -5,9 +5,9 @@ spring:
     name: short-link-gateway
   data:
     redis:
-      host: 8.134.93.74
       port: 6379
-      password: 123456
+      password: Nruonan996
+      host: 129.204.155.72
   cloud:
     nacos:
       discovery:
@@ -24,7 +24,6 @@ spring:
                 whitePathList:
                   - /api/short-link/admin/v1/user/login
                   - /api/short-link/admin/v1/user/has-username
-
         - id: short-link-project
           uri: lb://short-link-project/api/short-link/**
           predicates:

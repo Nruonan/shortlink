@@ -19,6 +19,7 @@ public class SentinelRuleConfig implements InitializingBean {
         List<FlowRule> rules = new ArrayList<>();
         FlowRule createOrderRule = new FlowRule();
         createOrderRule.setResource("create_short-link");
+        // 每秒最多只能通过5个请求
         createOrderRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
         createOrderRule.setCount(5);
         rules.add(createOrderRule);

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Nruonan
- * @description
+ * @description  布隆过滤器
  */
 @Configuration
 public class RBloomFilterConfiguration {
