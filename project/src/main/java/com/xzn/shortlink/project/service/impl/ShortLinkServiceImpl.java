@@ -165,7 +165,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         RLock lock = redissonClient.getLock(SHORT_LINK_CREATE_LOCK_KEY);
         lock.lock();
         try{
-            String shortLinkSuffix = generateSuffix(requestParam);
+            String shortLinkSuffix = generateSuffixByLock(requestParam);
             fullShortUrl =  StrBuilder.create(createShortLinkDefaultDomain) + "/" +shortLinkSuffix;
             ShortLinkDO shortLinkDO = ShortLinkDO.builder()
                 .domain(createShortLinkDefaultDomain)
@@ -338,7 +338,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 先删除原来短连接的缓存 防止访问错误网址
                 stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
                 rabbitTemplate.convertAndSend("short-link_project-normal.exchange", "short-link_project-normal.key", String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()), correlationData->{
-                    correlationData.getMessageProperties().setExpiration("3000");
+                    correlationData.getMessageProperties().setExpiration("500");
                     return correlationData;
                 });
                 Date currentDate = new Date();
@@ -592,7 +592,29 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
         return shortUri;
     }
-
+    private String generateSuffixByLock(ShortLinkCreateReqDTO requestParam) {
+        int customGenerateCount = 0;
+        String shorUri;
+        while (true) {
+            if (customGenerateCount > 10) {
+                throw new ServiceException("短链接频繁生成，请稍后再试");
+            }
+            String originUrl = requestParam.getOriginUrl();
+            originUrl += UUID.randomUUID().toString();
+            // 短链接哈希算法生成冲突问题如何解决？详情查看：https://nageoffer.com/shortlink/question
+            shorUri = HashUtil.hashToBase62(originUrl);
+            LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
+                .eq(ShortLinkDO::getGid, requestParam.getGid())
+                .eq(ShortLinkDO::getFullShortUrl, createShortLinkDefaultDomain + "/" + shorUri)
+                .eq(ShortLinkDO::getDelFlag, 0);
+            ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
+            if (shortLinkDO == null) {
+                break;
+            }
+            customGenerateCount++;
+        }
+        return shorUri;
+    }
     public void verificationWhitelist(String originUrl) {
         Boolean enable = gotoDomainWhiteListConfiguration.getEnable();
         if (enable == null || !enable){

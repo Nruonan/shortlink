@@ -138,8 +138,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDo> implements 
         }
         // 创建uuid存入redis
         String uuid = UUID.randomUUID().toString();
-        stringRedisTemplate.opsForHash().put("login_"+requestParam.getUsername(),uuid, JSON.toJSONString(requestParam));
-        stringRedisTemplate.expire("login_"+requestParam.getUsername(), 30, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForHash().put(USER_LOGIN_KEY+requestParam.getUsername(),uuid, JSON.toJSONString(requestParam));
+        stringRedisTemplate.expire(USER_LOGIN_KEY+requestParam.getUsername(), 30, TimeUnit.MINUTES);
         return new UserLoginRespDTO(uuid);
     }
 
