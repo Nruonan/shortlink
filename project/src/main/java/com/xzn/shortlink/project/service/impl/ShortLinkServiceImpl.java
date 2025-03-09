@@ -277,12 +277,34 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .validDateType(requestParam.getValidDateType())
                 .validDate(requestParam.getValidDate())
                 .build();
+            // 先删除原来短连接的缓存 防止访问错误网址
+            stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
+            // 更新数据库
             baseMapper.update(shortLinkDO,updateWrapper);
+            // 判断时间是否有效
+            if (!Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
+                || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
+                || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())
+            ){
+                // 延时删除
+                rabbitTemplate.convertAndSend("short-link_project-normal.exchange", "short-link_project-normal.key", String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()), correlationData->{
+                    correlationData.getMessageProperties().setExpiration("500");
+                    return correlationData;
+                });
+                Date currentDate = new Date();
+                if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(currentDate)) {
+                    if (Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(currentDate)) {
+                        stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
+                    }
+                }
+            }
         }else{
             RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(String.format(LOCK_GID_UPDATE_KEY, requestParam.getFullShortUrl()));
             RLock rLock = readWriteLock.writeLock();
             rLock.lock();
             try {
+                // 先删除原来短连接的缓存 防止访问错误网址
+                stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
                 // 先查老分组的短连接
                 LambdaUpdateWrapper<ShortLinkDO> linkUpdateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
                     .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
@@ -324,31 +346,27 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 shortLinkGotoMapper.delete(linkGotoQueryWrapper);
                 shortLinkGotoDO.setGid(requestParam.getGid());
                 shortLinkGotoMapper.insert(shortLinkGotoDO);
+                // 判断时间是否有效
+                if (!Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
+                    || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
+                    || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())
+                ){
+                    rabbitTemplate.convertAndSend("short-link_project-normal.exchange", "short-link_project-normal.key", String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()), correlationData->{
+                        correlationData.getMessageProperties().setExpiration("500");
+                        return correlationData;
+                    });
+                    Date currentDate = new Date();
+                    if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(currentDate)) {
+                        if (Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(currentDate)) {
+                            stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
+                        }
+                    }
+                }
             } finally {
                 rLock.unlock();
             }
 
         }
-
-            // 判断时间是否有效
-            if (!Objects.equals(requestParam.getValidDateType(),VailDateTypeEnum.PERMANENT.getType())
-                || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
-                || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())
-                ){
-                // 先删除原来短连接的缓存 防止访问错误网址
-                stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
-                rabbitTemplate.convertAndSend("short-link_project-normal.exchange", "short-link_project-normal.key", String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()), correlationData->{
-                    correlationData.getMessageProperties().setExpiration("400");
-                    return correlationData;
-                });
-                Date currentDate = new Date();
-                if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(currentDate)) {
-                    if (Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(currentDate)) {
-                        stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
-                    }
-                }
-            }
-
     }
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
