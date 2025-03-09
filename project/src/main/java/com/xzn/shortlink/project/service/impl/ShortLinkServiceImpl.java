@@ -338,7 +338,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 先删除原来短连接的缓存 防止访问错误网址
                 stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()));
                 rabbitTemplate.convertAndSend("short-link_project-normal.exchange", "short-link_project-normal.key", String.format(GOTO_SHORT_LINK_KEY,requestParam.getFullShortUrl()), correlationData->{
-                    correlationData.getMessageProperties().setExpiration("500");
+                    correlationData.getMessageProperties().setExpiration("400");
                     return correlationData;
                 });
                 Date currentDate = new Date();
